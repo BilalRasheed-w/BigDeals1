@@ -16,7 +16,7 @@ const asyncHandler = (controller) => async (req, res, next) => {
 const errMiddleware = (err, req, res, next) => {
   err.message = err.message || "Internal Server Error";
   err.statusCode = err.statusCode || 500;
-  res.status(err.statusCode).json({ msg: err.message });
+  res.status(err.statusCode).json({ msg: err.message, stack: err.stack });
 };
 
 export { customError, asyncHandler, errMiddleware };
