@@ -46,7 +46,7 @@ const productSchema = new mongoose.Schema({
       comment: { type: String, required: true },
     },
   ],
-  // user: { type: mongoose.Schema.ObjectId, required: true },
-});
+  user: { type: mongoose.Schema.ObjectId, required: true },
+},{timestamps:true});
 const model = mongoose.model("Product", productSchema);
 export default model;

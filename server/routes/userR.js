@@ -7,7 +7,7 @@ import {
   login,
   logout,
   myDetails,
-  redirect,
+  // redirect,
   registerUser,
   resetPassword,
   updatePassword,

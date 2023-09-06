@@ -47,7 +47,7 @@ const updatePassword = asyncHandler(async (req, res, next) => {
   if (newPassword !== confirmPassword)
     throw new customError("password doesn't match", 400);
   user.password = newPassword;
-  user.save({ new: true, validateBeforeSave: false });
+  await user.save({ new: true, validateBeforeSave: false });
   res.status(200).json({ msg: "password updated successfully" });
 });
 
@@ -67,7 +67,7 @@ const resetPassword = asyncHandler(async (req, res, next) => {
   if (password !== confirmPassword)
     throw new customError("password doesn't match", 400);
   user.password = password;
-  user.save({ validateBeforeSave: false, new: true });
+  await user.save({ validateBeforeSave: false, new: true });
   res.status(200).json({ msg: "password updated successfully" });
 });
 
@@ -100,7 +100,7 @@ const updateUser = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.params.id);
   if (!user) throw new customError("User not  Found", 404);
   user.role = req.body.role;
-  user.save({ new: true, validateBeforeSave: false });
+ await user.save({ new: true, validateBeforeSave: false });
   res.status(200).json({ user });
 });
 
@@ -115,4 +115,4 @@ const deleteUser = asyncHandler(async (req, res, next) => {
 //   res.redirect("http://localhost:5000/api/users");
 // });
 
-export { getAllUsers, updateUser, deleteUser, getUserDetails, redirect };
+export { getAllUsers, updateUser, deleteUser, getUserDetails,  };
