@@ -2,26 +2,29 @@
   "name": "bigdeals1",
   "version": "1.0.0",
   "description": "this is one functional ecom site",
-  "type":"module",
+  "type": "module",
   "main": "server/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "client":"npm run client --prefix client",
-    "server":"nodemon server/server.js",
-    "dev":"concurrently \"npm run client\" \"npm run server\" "
+    "client": "npm run client --prefix client",
+    "server": "nodemon server/server.js",
+    "dev": "concurrently \"npm run client\" \"npm run server\" "
   },
   "author": "Rasheed",
   "license": "ISC",
-  "dependencies":{
+  "dependencies": {  
+    "aws-sdk": "^2.1397.0",
     "bcryptjs": "^2.4.3",
     "concurrently": "8.2.0",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.1",
+    "multer": "^1.4.5-lts.1",
+    "multer-s3": "2.10.0",
     "nodemailer": "^6.9.4",
-    "validator": "^13.11.0"  
+    "validator": "^13.11.0"
   }
-  
 }

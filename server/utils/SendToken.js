@@ -7,7 +7,14 @@ const sendToken = (user, status, res) => {
     ),
   };
   res.cookie("token", token, cookieOptions);
-  res.status(status).json({ success: true });
+  const userData = {
+    name: user.name,
+    email: user.email,
+    id: user._id,
+    image: user.image,
+    role:user.role
+  };
+  res.status(status).json({ userData, success: true });
 };
 
 export { sendToken };

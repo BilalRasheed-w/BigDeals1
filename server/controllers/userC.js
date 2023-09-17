@@ -7,15 +7,22 @@ import { sendEmail } from "../utils/sendEmail.js";
 const registerUser = asyncHandler(async (req, res, next) => {
   const userExist = await User.findOne({ email: req.body.email });
   if (userExist) throw new customError("User already exist", 409);
-  const user = await User.create(req.body);
+  const data = req.body;
+
+  const allData = {
+    ...req.body,
+    image: { imageUrl: req.file.location, id: Date.now() },
+  };
+  console.log("after image", allData);
+
   sendToken(user, 200, res);
 });
 
 const login = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
-  if (!user) throw new customError("Email or Password is Invalid", 404);
+  if (!user) throw new customError("Email or Password is Invalid ", 404);
   const isMatched = await user.comparePassword(req.body.password);
-  if (!isMatched) throw new customError("Email or password is Invalid", 403);
+  if (!isMatched) throw new customError("Email or password is Invalid", 401);
   sendToken(user, 200, res);
 });
 
@@ -100,7 +107,7 @@ const updateUser = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.params.id);
   if (!user) throw new customError("User not  Found", 404);
   user.role = req.body.role;
- await user.save({ new: true, validateBeforeSave: false });
+  await user.save({ new: true, validateBeforeSave: false });
   res.status(200).json({ user });
 });
 
@@ -115,4 +122,4 @@ const deleteUser = asyncHandler(async (req, res, next) => {
 //   res.redirect("http://localhost:5000/api/users");
 // });
 
-export { getAllUsers, updateUser, deleteUser, getUserDetails,  };
+export { getAllUsers, updateUser, deleteUser, getUserDetails };

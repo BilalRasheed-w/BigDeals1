@@ -19,10 +19,11 @@ import {
   isAuthorized as isAdmin,
 } from "../middleware/isAuth.js";
 import { verifyJwt } from "../utils/sendEmail.js";
+import upload from "../config/s3.js";
 
 const router = express.Router();
 
-router.post("/user/new", registerUser);
+router.post("/user/new", upload.single("image"), registerUser);
 router.post("/user/login", login);
 router.get("/user/logout", logout);
 router.get("/user/me", isLoggedIn, myDetails);
