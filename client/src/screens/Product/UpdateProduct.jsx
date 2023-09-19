@@ -14,14 +14,50 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  FormErrorMessage,
+  Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Link as ReactLink } from "react-router-dom";
 import "../../index.css";
 
+const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+
 export default function UpdateProduct() {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [Category, setCategory] = useState();
   const [Price, setPrice] = useState(1);
   const [Stock, setStock] = useState(1);
+  const [image, setImage] = useState();
+  const [imageError, setImageError] = useState(false);
+
+  const handleFileUpload = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!image) return setImageError(true);
+    if (!allowedTypes.includes(image.type)) return setImageError(true);
+    if (allowedTypes.includes(image.type)) setImageError(false);
+    const data = {
+      name,
+      description,
+      Category,
+      Price,
+      Stock,
+      image,
+    };
+    setName(""),
+      setDescription(""),
+      setCategory(""),
+      setPrice(1),
+      setStock(1),
+      setImage(""),
+      console.log(data);
+  };
+
   return (
     <Flex
       px={{ base: 5 }}
@@ -50,19 +86,26 @@ export default function UpdateProduct() {
         >
           Update Product
         </Heading>
-        <ProductName />
+        <ProductName setName={setName} name={name} />
         <ProductPrice setPrice={setPrice} Price={Price} />
-        <ProductDescription />
-        <ProductCategory />
+        <ProductDescription
+          setDescription={setDescription}
+          description={description}
+        />
+        <ProductCategory setCategory={setCategory} />
         <ProductStock setStock={setStock} Stock={Stock} />
-        <ProductImage />
-        <AddNowButton />
+        <ProductImage
+          handleFileUpload={handleFileUpload}
+          imageError={imageError}
+          image={image}
+        />
+        <AddNowButton handleSubmit={handleSubmit} />
       </Stack>
     </Flex>
   );
 }
 
-const AddNowButton = () => (
+const AddNowButton = ({ handleSubmit }) => (
   <Button
     mt={{ base: 1, md: 0 }}
     mb={{ lg: 4 }}
@@ -70,15 +113,26 @@ const AddNowButton = () => (
     size={{ md: "sm", lg: "md" }}
     colorScheme={"blue"}
     variant={"solid"}
+    type="submit"
+    onClick={handleSubmit}
   >
     Add now
   </Button>
 );
 
-const ProductName = () => (
-  <FormControl>
+const ProductName = ({ setName, name }) => (
+  <FormControl isRequired>
     <FormLabel>Product Name</FormLabel>
-    <Input px={2} rounded={"sm"} size={{ md: "xs", lg: "sm" }} type="text" />
+    <Input
+      value={name}
+      px={2}
+      rounded={"sm"}
+      size={{ md: "xs", lg: "sm" }}
+      type="text"
+      onChange={(e) => {
+        setName(e.target.value);
+      }}
+    />
   </FormControl>
 );
 
@@ -89,32 +143,40 @@ const ProductPrice = ({ setPrice, Price }) => (
   </FormControl>
 );
 
-const ProductDescription = () => (
-  <FormControl>
+const ProductDescription = ({ setDescription, description }) => (
+  <FormControl isRequired>
     <FormLabel>description</FormLabel>
     <Textarea
+      value={description}
       px={2}
       resize={"none"}
       placeholder="Please enter product description"
       rounded={"sm"}
       size={{ md: "xs", lg: "sm" }}
       type="text"
+      onChange={(e) => {
+        setDescription(e.target.value);
+      }}
     />
+    <FormErrorMessage>please enter product description</FormErrorMessage>
   </FormControl>
 );
 
-const ProductCategory = () => (
+const ProductCategory = ({ setCategory }) => (
   <FormControl>
     <FormLabel>Category</FormLabel>
     <Select
       placeholder="Select Category"
       rounded={"sm"}
       size={{ md: "xs", lg: "sm" }}
+      onChange={(e) => {
+        setCategory(e.target.value);
+      }}
     >
-      <option value="option1">Electronics</option>
-      <option value="option2">Clothing</option>
-      <option value="option3">Laptops</option>
-      <option value="option3">Mobiles</option>
+      <option value="Electronics">Electronics</option>
+      <option value="Clothing">Clothing</option>
+      <option value="Laptops">Laptops</option>
+      <option value="Mobiles">Mobiles</option>
     </Select>
   </FormControl>
 );
@@ -126,7 +188,7 @@ const ProductStock = ({ setStock, Stock }) => (
   </FormControl>
 );
 
-const ProductImage = () => (
+const ProductImage = ({ handleFileUpload, imageError }) => (
   <FormControl>
     <FormLabel>Upload image</FormLabel>
     <Input
@@ -137,7 +199,13 @@ const ProductImage = () => (
       size={{ md: "xs", lg: "sm" }}
       type="file"
       fontSize={"xs"}
+      onChange={handleFileUpload}
     />
+    {imageError ? (
+      <Text my={2} fontWeight={"bold"} fontSize={"sm"} color={"red.500"}>
+        pls upload a valid image( jpeg / jpg / png )
+      </Text>
+    ) : null}
   </FormControl>
 );
 

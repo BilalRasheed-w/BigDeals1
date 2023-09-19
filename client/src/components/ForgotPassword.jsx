@@ -9,12 +9,36 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+const Schema = {
+  email: Yup.string()
+    .email("pls enter valid email")
+    .required("pls enter your email"),
+};
 
 export default function ForgotPassword() {
+  const {
+    values,
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    touched,
+    errors,
+    handleReset,
+  } = useFormik({
+    initialValues: { email: "" },
+    validationSchema: Yup.object(Schema),
+    onSubmit: (values, action) => {
+      console.log(values);
+      action.resetForm();
+    },
+  });
   return (
-    <Flex justify={"center"} bg={'gray.50'} minH={'80vh'}  >
+    <Flex justify={"center"} bg={"gray.50"} minH={"80vh"}>
       <Stack
-      h={'fit-content'}
+        h={"fit-content"}
         spacing={4}
         w={"full"}
         maxW={"md"}
@@ -35,11 +59,20 @@ export default function ForgotPassword() {
         </Text>
         <FormControl id="email">
           <Input
+            value={values.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            name="email"
             size={"sm"}
             placeholder="your-email@example.com"
             _placeholder={{ color: "gray.500" }}
             type="email"
           />
+          {touched.email && errors.email ? (
+            <Text fontSize={"xs"} color={"red.500"}>
+              {errors.email}
+            </Text>
+          ) : null}
         </FormControl>
         <Stack spacing={6}>
           <Button
@@ -49,6 +82,7 @@ export default function ForgotPassword() {
             _hover={{
               bg: "blue.500",
             }}
+            onClick={handleSubmit}
           >
             Submit
           </Button>

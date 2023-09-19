@@ -12,10 +12,18 @@ import {
   Image,
   VStack,
   Divider,
+  FormHelperText,
+  InputRightElement,
+  InputGroup,
 } from "@chakra-ui/react";
 
-import LoginJpg from "../assets/log.jpg";
+import {useState} from 'react'
+
+import LoginJpg from "../../assets/log.jpg";
 import { Link as ReactLink } from "react-router-dom";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 export default function Login() {
   return (
@@ -26,7 +34,26 @@ export default function Login() {
   );
 }
 
+const LoginSchema = {
+  email: Yup.string()
+    .email("pls enter valid email")
+    .required("pls enter your email"),
+  password: Yup.string()
+    .min(8, "password must contain  8 letters")
+    .required("pls enter your password"),
+};
+
 const Left = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
+    useFormik({
+      initialValues: { email: "", password: "" },
+      validationSchema: Yup.object(LoginSchema),
+      onSubmit: (values,action) => {
+        console.log(values);
+        action.resetForm()
+      },
+    });
   return (
     <Flex
       px={{ base: 5 }}
@@ -40,7 +67,6 @@ const Left = () => {
       <Stack
         shadow={{ lg: "lg" }}
         h={{ lg: "fit-content" }}
-        // border={{ lg: "1px" }}
         rounded={{ lg: "2xl" }}
         borderColor={"red.200"}
         py={{ lg: 8 }}
@@ -61,11 +87,51 @@ const Left = () => {
         </Heading>
         <FormControl id="email">
           <FormLabel>Email address</FormLabel>
-          <Input rounded={"sm"} size={{ md: "xs", lg: "sm" }} type="email" />
+          <Input
+            value={values.email}
+            rounded={"sm"}
+            size={{ md: "xs", lg: "sm" }}
+            type="email"
+            name="email"
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+
+          {touched.email && errors.email ? (
+            <Text fontSize={"xs"} color={"red.500"}>
+              {errors.email}
+            </Text>
+          ) : null}
         </FormControl>
         <FormControl id="password">
           <FormLabel>Password</FormLabel>
-          <Input rounded={"sm"} size={{ md: "xs", lg: "sm" }} type="password" />
+          <InputGroup>
+            <Input
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              rounded={"sm"}
+              size={{ md: "xs", lg: "sm" }}
+            />
+            <InputRightElement  h={"full"}>
+              <Button
+                variant={"ghost"}
+                onClick={() => {
+                  setShowPassword((showPassword) => !showPassword);
+                }}
+              >
+                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+
+          {touched.password && errors.password ? (
+            <Text fontSize={"xs"} color={"red.500"}>
+              {errors.password}
+            </Text>
+          ) : null}
         </FormControl>
         <Stack spacing={6}>
           <Stack
@@ -86,6 +152,7 @@ const Left = () => {
             mt={{ base: 3, md: 0 }}
             colorScheme={"blue"}
             variant={"solid"}
+            onClick={handleSubmit}
           >
             Sign in
           </Button>

@@ -6,10 +6,43 @@ import {
   Heading,
   Input,
   Stack,
+  Text,
   useColorModeValue,
 } from "@chakra-ui/react";
 
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+const Schema = {
+  oldPassword: Yup.string()
+    .min(8, "old password must contain  8 letters")
+    .required("pls enter your old password"),
+  newPassword: Yup.string()
+    .min(8, "password must contain  8 letters")
+    .required("pls enter your password"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("newPassword"), null], "password must match")
+    .required("pls enter confirm password"),
+};
+
 export default function UpdatePassword() {
+  const {
+    values,
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    touched,
+    errors,
+    handleReset,
+  } = useFormik({
+    initialValues: { oldPassword: "", newPassword: "", confirmPassword: "" },
+    validationSchema: Yup.object(Schema),
+    onSubmit: (values, action) => {
+      console.log(values);
+      action.resetForm();
+    },
+  });
+
   return (
     <Flex minH={"80vh"} justify={"center"} bg={"gray.50"}>
       <Stack
@@ -29,15 +62,51 @@ export default function UpdatePassword() {
         </Heading>
         <FormControl isRequired>
           <FormLabel>Old Password</FormLabel>
-          <Input size={"sm"} type="email" />
+          <Input
+            value={values.oldPassword}
+            name="oldPassword"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            size={"sm"}
+            type="text"
+          />
+          {touched.oldPassword && errors.oldPassword ? (
+            <Text fontSize={"xs"} color={"red.500"}>
+              {errors.oldPassword}
+            </Text>
+          ) : null}
         </FormControl>
-        <FormControl id="email" isRequired>
+        <FormControl isRequired>
           <FormLabel>New Password</FormLabel>
-          <Input size={"sm"} type="email" />
+          <Input
+            size={"sm"}
+            type="text"
+            value={values.newPassword}
+            name="newPassword"
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+          {touched.newPassword && errors.newPassword ? (
+            <Text fontSize={"xs"} color={"red.500"}>
+              {errors.newPassword}
+            </Text>
+          ) : null}
         </FormControl>
         <FormControl id="password" isRequired>
           <FormLabel>Confirm Password</FormLabel>
-          <Input size={"sm"} type="password" />
+          <Input
+            value={values.confirmPassword}
+            name="confirmPassword"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            size={"sm"}
+            type="text"
+          />
+          {touched.confirmPassword && errors.confirmPassword ? (
+            <Text fontSize={"xs"} color={"red.500"}>
+              {errors.confirmPassword}
+            </Text>
+          ) : null}
         </FormControl>
         <Stack spacing={6}>
           <Button
@@ -47,6 +116,7 @@ export default function UpdatePassword() {
             _hover={{
               bg: "blue.500",
             }}
+            onClick={handleSubmit}
           >
             Submit
           </Button>

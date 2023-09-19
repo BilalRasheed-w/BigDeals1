@@ -9,15 +9,49 @@ import {
   useColorModeValue,
   Avatar,
   VStack,
+  Text,
 } from "@chakra-ui/react";
 
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+import {useState} from 'react'
+
+
+const Schema = {
+  name: Yup.string()
+    .min(4, "name must be atleast 4 letters ")
+    .required("pls enter your name"),
+  email: Yup.string()
+    .email("pls enter valid email")
+    .required("pls enter your email"),
+};
+
+const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+
 export default function Profile() {
+  const [image, setImage] = useState();
+  const [imageError, setImageError] = useState(false);
+
+  const { values, handleChange, handleSubmit, handleBlur, touched, errors,handleReset } =
+    useFormik({
+      initialValues: { name: "", email: "" },
+      validationSchema: Yup.object(Schema),
+      onSubmit: (values, action) => {
+        if (image && !allowedTypes.includes(image.type))
+          return setImageError(true);
+        if (image && allowedTypes.includes(image.type)) setImageError(false);
+        console.log(image);
+        console.log(values);
+        action.resetForm();
+      },
+    });
+
+  const handleFileUpload = (e) => {
+    setImage(e.target.files[0]);
+  };
   return (
-    <Flex
-      minH={"fit-content"}
-      justify={"center"}
-      bg={"gray.50"}
-    >
+    <Flex minH={"fit-content"} justify={"center"} bg={"gray.50"}>
       <Stack
         spacing={4}
         w={"full"}
@@ -44,18 +78,36 @@ export default function Profile() {
         <FormControl id="userName" isRequired>
           <FormLabel>User name</FormLabel>
           <Input
+            value={values.name}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            name="name"
             placeholder="UserName"
             _placeholder={{ color: "gray.500" }}
             type="text"
           />
+          {touched.name && errors.name ? (
+            <Text fontSize={"xs"} color={"red.500"}>
+              {errors.name}
+            </Text>
+          ) : null}
         </FormControl>
         <FormControl id="email" isRequired>
           <FormLabel>Email address</FormLabel>
           <Input
+            value={values.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            name="email"
             placeholder="your-email@example.com"
             _placeholder={{ color: "gray.500" }}
             type="email"
           />
+          {touched.email && errors.email ? (
+            <Text fontSize={"xs"} color={"red.500"}>
+              {errors.email}
+            </Text>
+          ) : null}
         </FormControl>
         <FormControl>
           <FormLabel>Upload image</FormLabel>
@@ -67,7 +119,13 @@ export default function Profile() {
             size={{ md: "xs", lg: "sm" }}
             type="file"
             fontSize={"xs"}
+            onChange={handleFileUpload}
           />
+           {imageError ? (
+            <Text fontSize={"xs"} color={"red.500"}>
+              pls upload a valid image( jpeg / jpg / png )
+            </Text>
+          ) : null}
         </FormControl>
         <Stack spacing={6} my={4} direction={["column", "row"]}>
           <Button
@@ -77,6 +135,7 @@ export default function Profile() {
             _hover={{
               bg: "red.500",
             }}
+            onClick={handleReset}
           >
             Cancel
           </Button>
@@ -87,6 +146,7 @@ export default function Profile() {
             _hover={{
               bg: "blue.500",
             }}
+            onClick={handleSubmit}
           >
             Submit
           </Button>
