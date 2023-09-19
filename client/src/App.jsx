@@ -10,6 +10,7 @@ import ResetPassword from "./components/ResetPassword";
 import Car from "./screens/Car";
 import NewProduct from "./screens/ProductUpload";
 import Profile from "./screens/Profile";
+import UpdatePassword from "./components/UpdatePassword";
 
 const App = () => {
   return (
@@ -17,10 +18,11 @@ const App = () => {
       <Navbar />
       <Routes>
         {/* <Route index element={<Hero />} /> */}
-        <Route index element={<Car />} />
+        {/* <Route index element={<Car />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/password" element={<UpdatePassword />} />
         <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/reset" element={<ResetPassword />} />
         <Route path="/product/new" element={<NewProduct />} />
