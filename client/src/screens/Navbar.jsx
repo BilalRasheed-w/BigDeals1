@@ -26,7 +26,6 @@ const Navbar = () => {
         w="full"
         px={{ base: 2, sm: 4, md: 6 }}
         py={3}
-        shadow="md"
       >
         <Flex alignItems="center" justifyContent="space-between" mx="auto">
           <Left />

@@ -35,7 +35,7 @@ import { PiShoppingCartSimple } from "react-icons/pi";
 import { Link as ReactLink } from "react-router-dom";
 
 
-const isloggedin = true;
+const isloggedin = false;
 
 const NavRight = () => {
   const bg = useColorModeValue("white", "gray.800");
