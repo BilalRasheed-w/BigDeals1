@@ -12,6 +12,7 @@ import {
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
 
 const Schema = {
   oldPassword: Yup.string()
@@ -26,22 +27,28 @@ const Schema = {
 };
 
 export default function UpdatePassword() {
-  const {
-    values,
-    handleChange,
-    handleSubmit,
-    handleBlur,
-    touched,
-    errors,
-    handleReset,
-  } = useFormik({
-    initialValues: { oldPassword: "", newPassword: "", confirmPassword: "" },
-    validationSchema: Yup.object(Schema),
-    onSubmit: (values, action) => {
-      console.log(values);
-      action.resetForm();
-    },
-  });
+  const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
+    useFormik({
+      initialValues: { oldPassword: "", newPassword: "", confirmPassword: "" },
+      validationSchema: Yup.object(Schema),
+      onSubmit: async (values, action) => {
+        console.log(values);
+        try {
+          const response = await axios.put(
+            "http://localhost:5000/api/user/password",
+            {
+              oldPassword: values.oldPassword,
+              newPassword: values.newPassword,
+              confirmPassword: values.confirmPassword,
+            },
+            { withCredentials: true }
+          );
+          console.log(response);
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    });
 
   return (
     <Flex minH={"80vh"} justify={"center"} bg={"gray.50"}>

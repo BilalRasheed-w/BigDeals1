@@ -11,6 +11,7 @@ import {
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
 
 const Schema = {
   email: Yup.string()
@@ -19,22 +20,23 @@ const Schema = {
 };
 
 export default function ForgotPassword() {
-  const {
-    values,
-    handleChange,
-    handleSubmit,
-    handleBlur,
-    touched,
-    errors,
-    handleReset,
-  } = useFormik({
-    initialValues: { email: "" },
-    validationSchema: Yup.object(Schema),
-    onSubmit: (values, action) => {
-      console.log(values);
-      action.resetForm();
-    },
-  });
+  const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
+    useFormik({
+      initialValues: { email: "" },
+      validationSchema: Yup.object(Schema),
+      onSubmit: async (values, action) => {
+        console.log(values);
+        try {
+          const response = await axios.post(
+            "http://localhost:5000/api/user/forgot",
+            { email: values.email }
+          );
+          console.log(response);
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    });
   return (
     <Flex justify={"center"} bg={"gray.50"} minH={"80vh"}>
       <Stack

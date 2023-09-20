@@ -9,15 +9,16 @@ import {
   useColorModeValue,
   Avatar,
   VStack,
+  Link,
   Text,
 } from "@chakra-ui/react";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { Link as ReactLink } from "react-router-dom";
 
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import axios from "axios";
 const Schema = {
   name: Yup.string()
     .min(4, "name must be atleast 4 letters ")
@@ -27,13 +28,9 @@ const Schema = {
     .required("pls enter your email"),
 };
 
-const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-
 export default function Profile() {
   const dispatch = useDispatch();
   const { loading, error, user } = useSelector((state) => state.user);
-  const [image, setImage] = useState();
-  const [imageError, setImageError] = useState(false);
 
   const {
     values,
@@ -49,19 +46,24 @@ export default function Profile() {
       email: user && user.email ? user.email : "",
     },
     validationSchema: Yup.object(Schema),
-    onSubmit: (values, action) => {
-      if (image && !allowedTypes.includes(image.type))
-        return setImageError(true);
-      if (image && allowedTypes.includes(image.type)) setImageError(false);
-      console.log(image);
+    onSubmit: async (values, action) => {
       console.log(values);
-      action.resetForm();
+      try {
+        const response = await axios.put(
+          "http://localhost:5000/api/user/me",
+          {
+            email: values.email,
+            name: values.name,
+          },
+          { withCredentials: true }
+        );
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
 
-  const handleFileUpload = (e) => {
-    setImage(e.target.files[0]);
-  };
   return (
     <Flex minH={"fit-content"} justify={"center"} bg={"gray.50"}>
       <Stack
@@ -84,7 +86,6 @@ export default function Profile() {
         </Heading>
         <FormControl w={"fit-content"} alignSelf={"center"}>
           <VStack spacing={6} pt={2}>
-            {console.log(user.image.imageUrl)}
             <Avatar size="2xl" src={user.image.imageUrl}></Avatar>
           </VStack>
         </FormControl>
@@ -122,25 +123,12 @@ export default function Profile() {
             </Text>
           ) : null}
         </FormControl>
-        <FormControl>
-          <FormLabel>Upload image</FormLabel>
-          <Input
-            id="upload"
-            p={0}
-            bg={"gray.100"}
-            borderRadius={"10px"}
-            // size={{ md: "xs", lg: "sm" }}
-            size={"sm"}
-            type="file"
-            fontSize={"xs"}
-            onChange={handleFileUpload}
-          />
-          {imageError ? (
-            <Text fontSize={"xs"} color={"red.500"}>
-              pls upload a valid image( jpeg / jpg / png )
-            </Text>
-          ) : null}
-        </FormControl>
+        <Text fontSize={"sm"}>
+          <Link as={ReactLink} color={"blue.500"} to={"/password"}>
+            Click here
+          </Link>{" "}
+          to update password{" "}
+        </Text>
         <Stack spacing={6} my={4} direction={["column", "row"]}>
           <Button
             bg={"red.400"}
