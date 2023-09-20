@@ -15,8 +15,8 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import {useState} from 'react'
-
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const Schema = {
   name: Yup.string()
@@ -30,22 +30,34 @@ const Schema = {
 const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 
 export default function Profile() {
+  const dispatch = useDispatch();
+  const { loading, error, user } = useSelector((state) => state.user);
   const [image, setImage] = useState();
   const [imageError, setImageError] = useState(false);
 
-  const { values, handleChange, handleSubmit, handleBlur, touched, errors,handleReset } =
-    useFormik({
-      initialValues: { name: "", email: "" },
-      validationSchema: Yup.object(Schema),
-      onSubmit: (values, action) => {
-        if (image && !allowedTypes.includes(image.type))
-          return setImageError(true);
-        if (image && allowedTypes.includes(image.type)) setImageError(false);
-        console.log(image);
-        console.log(values);
-        action.resetForm();
-      },
-    });
+  const {
+    values,
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    touched,
+    errors,
+    handleReset,
+  } = useFormik({
+    initialValues: {
+      name: user && user.name ? user.name : "",
+      email: user && user.email ? user.email : "",
+    },
+    validationSchema: Yup.object(Schema),
+    onSubmit: (values, action) => {
+      if (image && !allowedTypes.includes(image.type))
+        return setImageError(true);
+      if (image && allowedTypes.includes(image.type)) setImageError(false);
+      console.log(image);
+      console.log(values);
+      action.resetForm();
+    },
+  });
 
   const handleFileUpload = (e) => {
     setImage(e.target.files[0]);
@@ -72,7 +84,8 @@ export default function Profile() {
         </Heading>
         <FormControl w={"fit-content"} alignSelf={"center"}>
           <VStack spacing={6} pt={2}>
-            <Avatar size="2xl" src=""></Avatar>
+            {console.log(user.image.imageUrl)}
+            <Avatar size="2xl" src={user.image.imageUrl}></Avatar>
           </VStack>
         </FormControl>
         <FormControl id="userName" isRequired>
@@ -116,12 +129,13 @@ export default function Profile() {
             p={0}
             bg={"gray.100"}
             borderRadius={"10px"}
-            size={{ md: "xs", lg: "sm" }}
+            // size={{ md: "xs", lg: "sm" }}
+            size={"sm"}
             type="file"
             fontSize={"xs"}
             onChange={handleFileUpload}
           />
-           {imageError ? (
+          {imageError ? (
             <Text fontSize={"xs"} color={"red.500"}>
               pls upload a valid image( jpeg / jpg / png )
             </Text>

@@ -11,16 +11,18 @@ import {
   Button,
   Heading,
   Text,
-  useColorModeValue,
   Link,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Link as ReactLink } from "react-router-dom";
 import "../../index.css";
+import axios from "axios";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import { SignedUp, loginUser } from "../../store/slices/userSlice";
 
 const SignUpSchema = {
   name: Yup.string()
@@ -37,9 +39,12 @@ const SignUpSchema = {
     .required("pls enter confirm password"),
 };
 
+const url = "http://localhost:5000/api/user/new";
+
 const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 
 export default function Signup() {
+  const dispatch = useDispatch();
   const [image, setImage] = useState();
   const [imageError, setImageError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -49,12 +54,26 @@ export default function Signup() {
     useFormik({
       initialValues: { name: "", email: "", password: "", confirmPassword: "" },
       validationSchema: Yup.object(SignUpSchema),
-      onSubmit: (values, action) => {
+      onSubmit: async (values, action) => {
         if (image && !allowedTypes.includes(image.type))
           return setImageError(true);
         if (image && allowedTypes.includes(image.type)) setImageError(false);
-        console.log(image);
-        console.log(values);
+
+        const formData = new FormData();
+        if (image) {
+          formData.append("image", image);
+        }
+        formData.append("name", values.name);
+        formData.append("email", values.email);
+        formData.append("password", values.password);
+        try {
+          const response = await axios.post(url, formData);
+          console.log(response.data.userData);
+          dispatch(SignedUp(response.data.userData));
+        } catch (error) {
+          console.log(error);
+        }
+
         action.resetForm();
       },
     });
@@ -193,6 +212,7 @@ export default function Signup() {
             size={{ md: "xs", lg: "sm" }}
             type="file"
             fontSize={"xs"}
+            name="image"
             onChange={handleFileUpload}
           />
           {imageError ? (

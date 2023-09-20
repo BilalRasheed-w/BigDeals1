@@ -117,9 +117,9 @@ const deleteReview = asyncHandler(async (req, res, next) => {
 });
 
 const getReviews = asyncHandler(async (req, res, next) => {
-  const product = await Product.findById(req.params.id)
+  const product = await Product.findById(req.params.id);
   if (!product) throw new customError("Product Not found", 404);
- const numberOfReviews = product.reviews.length
+  const numberOfReviews = product.reviews.length;
   res.status(200).json({ numberOfReviews, reviews: product.reviews });
 });
 

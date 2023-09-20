@@ -7,20 +7,23 @@ import { sendEmail } from "../utils/sendEmail.js";
 const registerUser = asyncHandler(async (req, res, next) => {
   const userExist = await User.findOne({ email: req.body.email });
   if (userExist) throw new customError("User already exist", 409);
-  const data = req.body;
-
-  const allData = {
-    ...req.body,
-    image: { imageUrl: req.file.location, id: Date.now() },
-  };
-  console.log("after image", allData);
-
+  const { name, email, password } = req.body;
+  let image = { imageUrl: "sample id", id: Date.now() };
+  if (req.file) {
+    image = { imageUrl: req.file.location, id: Date.now() };
+  }
+  const user = await User.create({
+    name,
+    email,
+    password,
+    image,
+  });
   sendToken(user, 200, res);
 });
 
 const login = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
-  if (!user) throw new customError("Email or Password is Invalid ", 404);
+  if (!user) throw new customError("Email or Password is Invalid", 404);
   const isMatched = await user.comparePassword(req.body.password);
   if (!isMatched) throw new customError("Email or password is Invalid", 401);
   sendToken(user, 200, res);

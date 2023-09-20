@@ -17,13 +17,18 @@ import {
   InputGroup,
 } from "@chakra-ui/react";
 
-import {useState} from 'react'
+import { useState } from "react";
 
 import LoginJpg from "../../assets/log.jpg";
 import { Link as ReactLink } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../store/slices/userSlice";
+
+const url = "http://localhost:5000/api/user/login";
 
 export default function Login() {
   return (
@@ -44,14 +49,15 @@ const LoginSchema = {
 };
 
 const Left = () => {
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: { email: "", password: "" },
       validationSchema: Yup.object(LoginSchema),
-      onSubmit: (values,action) => {
-        console.log(values);
-        action.resetForm()
+      onSubmit: async (values, action) => {
+        dispatch(loginUser({ email: values.email, password: values.password }));
+        action.resetForm();
       },
     });
   return (
@@ -110,12 +116,12 @@ const Left = () => {
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               name="password"
               rounded={"sm"}
               size={{ md: "xs", lg: "sm" }}
             />
-            <InputRightElement  h={"full"}>
+            <InputRightElement h={"full"}>
               <Button
                 variant={"ghost"}
                 onClick={() => {
