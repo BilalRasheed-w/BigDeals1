@@ -7,7 +7,7 @@ const sendEmail = async (user) => {
   const token = Jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: "30m",
   });
-  const url = `http://localhost:5000/api/user/reset/${token}`;
+  const url = `http://localhost:5000/reset/${token}`;
   const transporter = nodemailer.createTransport({
     service: process.env.SMTP_SERVICE,
     auth: {

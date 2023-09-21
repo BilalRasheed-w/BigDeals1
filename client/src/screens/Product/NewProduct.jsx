@@ -16,92 +16,124 @@ import {
   NumberDecrementStepper,
   FormErrorMessage,
   Text,
+  useToast,
+  Progress,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link as ReactLink } from "react-router-dom";
 import "../../index.css";
+import axios from "axios";
 
 const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+const url = "http://localhost:5000/api/product/new";
 
 export default function NewProduct() {
+  const toast = useToast();
+  const fileRef = useRef(null);
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [Category, setCategory] = useState();
   const [Price, setPrice] = useState(1);
+  const [Description, setDescription] = useState("");
   const [Stock, setStock] = useState(1);
-  const [image, setImage] = useState();
+  const [Category, setCategory] = useState();
+  const [image, setImage] = useState("");
   const [imageError, setImageError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleFileUpload = (e) => {
     setImage(e.target.files[0]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!image) return setImageError(true);
     if (!allowedTypes.includes(image.type)) return setImageError(true);
     if (allowedTypes.includes(image.type)) setImageError(false);
-    const data = {
-      name,
-      description,
-      Category,
-      Price,
-      Stock,
-      image,
-    };
-    setName(""),
-      setDescription(""),
-      setCategory(""),
-      setPrice(1),
-      setStock(1),
-      setImage(""),
-      console.log(data);
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("price", Price);
+    formData.append("description", Description);
+    formData.append("stock", Stock);
+    formData.append("category", Category);
+    formData.append("image", image);
+    setLoading(true);
+    try {
+      const response = await axios.post(url, formData, {
+        withCredentials: true,
+      });
+      if (response) setLoading(false);
+      if (response.status === 200) {
+        toast({
+          title: "Product added successfully",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+        setName("");
+        setDescription("");
+        setCategory("");
+        setPrice(1);
+        setStock(1);
+
+        if (fileRef.current) {
+          fileRef.current.value = "";
+        }
+      }
+
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <Flex
-      px={{ base: 5 }}
-      pb={{ base: 8, md: 4 }}
-      justify={"center"}
-      rounded={{ base: "lg", md: "none" }}
-      shadow={{ base: "md", md: "none" }}
-    >
-      <Stack
-        spacing={{ base: 4, md: 3 }}
-        shadow={{ lg: "2xl" }}
-        h={{ lg: "fit-content" }}
-        rounded={{ lg: "2xl" }}
-        px={{ lg: 10 }}
-        w={{ base: "full", md: "80%", lg: "full" }}
-        maxW={"md"}
-        mt={{ lg: 2 }}
-        pt={{ base: 2, md: 4 }}
-        pb={{ base: 2, md: 0 }}
+    <>
+      {loading && <Progress size="xs" isIndeterminate />}
+      <Flex
+        px={{ base: 5 }}
+        pb={{ base: 8, md: 4 }}
+        justify={"center"}
+        rounded={{ base: "lg", md: "none" }}
+        shadow={{ base: "md", md: "none" }}
       >
-        <Heading
-          mb={{ base: 2, md: 0 }}
-          alignSelf={{ base: "center" }}
-          fontSize={"2xl"}
-          fontWeight={"medium"}
+        <Stack
+          spacing={{ base: 4, md: 3 }}
+          shadow={{ lg: "2xl" }}
+          h={{ lg: "fit-content" }}
+          rounded={{ lg: "2xl" }}
+          px={{ lg: 10 }}
+          w={{ base: "full", md: "80%", lg: "full" }}
+          maxW={"md"}
+          mt={{ lg: 2 }}
+          pt={{ base: 2, md: 4 }}
+          pb={{ base: 2, md: 0 }}
         >
-          New Product
-        </Heading>
-        <ProductName setName={setName} name={name} />
-        <ProductPrice setPrice={setPrice} Price={Price} />
-        <ProductDescription
-          setDescription={setDescription}
-          description={description}
-        />
-        <ProductCategory setCategory={setCategory} />
-        <ProductStock setStock={setStock} Stock={Stock} />
-        <ProductImage
-          handleFileUpload={handleFileUpload}
-          imageError={imageError}
-          image={image}
-        />
-        <AddNowButton handleSubmit={handleSubmit} />
-      </Stack>
-    </Flex>
+          <Heading
+            mb={{ base: 2, md: 0 }}
+            alignSelf={{ base: "center" }}
+            fontSize={"2xl"}
+            fontWeight={"medium"}
+          >
+            New Product
+          </Heading>
+          <ProductName setName={setName} name={name} />
+          <ProductPrice setPrice={setPrice} Price={Price} />
+          <ProductDescription
+            setDescription={setDescription}
+            description={Description}
+          />
+          <ProductCategory setCategory={setCategory} />
+          <ProductStock setStock={setStock} Stock={Stock} />
+          <ProductImage
+            handleFileUpload={handleFileUpload}
+            imageError={imageError}
+            fileRef={fileRef}
+          />
+          <AddNowButton handleSubmit={handleSubmit} />
+        </Stack>
+      </Flex>
+    </>
   );
 }
 
@@ -173,10 +205,12 @@ const ProductCategory = ({ setCategory }) => (
         setCategory(e.target.value);
       }}
     >
-      <option value="Electronics">Electronics</option>
-      <option value="Clothing">Clothing</option>
-      <option value="Laptops">Laptops</option>
       <option value="Mobiles">Mobiles</option>
+      <option value="Laptops">Laptops</option>
+      <option value="smartWatches">SmartWatches</option>
+      <option value="buds">Buds</option>
+      <option value="monitors">Monitors</option>
+      <option value="SmartTv">SmartTv</option>
     </Select>
   </FormControl>
 );
@@ -188,10 +222,11 @@ const ProductStock = ({ setStock, Stock }) => (
   </FormControl>
 );
 
-const ProductImage = ({ handleFileUpload, imageError }) => (
+const ProductImage = ({ handleFileUpload, imageError, fileRef }) => (
   <FormControl>
     <FormLabel>Upload image</FormLabel>
     <Input
+      ref={fileRef}
       id="upload"
       p={0}
       bg={"gray.100"}
@@ -217,7 +252,6 @@ const PriceInput = ({ setPrice, Price }) => (
       size={{ md: "xs", lg: "sm" }}
       type="number"
       min={"1"}
-      max={"1000"}
       onChange={(value) => {
         setPrice(Number(value));
       }}
@@ -245,10 +279,10 @@ const PriceInput = ({ setPrice, Price }) => (
         color={"white"}
         size={"xs"}
         onClick={() => {
-          setPrice(199);
+          setPrice(9999);
         }}
       >
-        199
+        9999
       </Button>
       <Button
         fontSize={"xs"}
@@ -256,10 +290,10 @@ const PriceInput = ({ setPrice, Price }) => (
         color={"white"}
         size={"xs"}
         onClick={() => {
-          setPrice(499);
+          setPrice(19999);
         }}
       >
-        499
+        19999
       </Button>
       <Button
         fontSize={"xs"}
@@ -267,10 +301,10 @@ const PriceInput = ({ setPrice, Price }) => (
         color={"white"}
         size={"xs"}
         onClick={() => {
-          setPrice(999);
+          setPrice(49999);
         }}
       >
-        999
+        49999
       </Button>
     </HStack>
   </>

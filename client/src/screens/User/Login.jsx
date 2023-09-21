@@ -17,15 +17,15 @@ import {
   InputGroup,
 } from "@chakra-ui/react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import LoginJpg from "../../assets/log.jpg";
-import { Link as ReactLink } from "react-router-dom";
+import { Link as ReactLink, useNavigate } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../store/slices/userSlice";
 
 const url = "http://localhost:5000/api/user/login";
@@ -49,8 +49,17 @@ const LoginSchema = {
 };
 
 const Left = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { isAuth } = useSelector((state) => state.user);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (isAuth) {
+      navigate("/");
+    }
+  }, [isAuth]);
+
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: { email: "", password: "" },
@@ -60,6 +69,7 @@ const Left = () => {
         action.resetForm();
       },
     });
+
   return (
     <Flex
       px={{ base: 5 }}

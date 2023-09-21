@@ -15,8 +15,17 @@ const getAllProducts = asyncHandler(async (req, res, next) => {
 });
 
 const createProduct = asyncHandler(async (req, res, next) => {
-  req.body.user = req.user._id;
-  const product = await Product.create(req.body);
+  const { name, price, description, stock, category } = req.body;
+  const data = {
+    name,
+    price,
+    description,
+    category,
+    stock,
+    images: [{ imageUrl: req.file.location }],
+    user: req.user._id,
+  };
+  const product = await Product.create(data);
   res.status(200).json({ product });
 });
 

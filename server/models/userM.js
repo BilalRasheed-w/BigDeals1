@@ -3,31 +3,35 @@ import validator from "validator";
 import bcrypt from "bcryptjs";
 import Jwt from "jsonwebtoken";
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Please enter Your name"],
-    minLength: [4, `name should have atleast 4 characters`],
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Please enter Your name"],
+      minLength: [4, `name should have atleast 4 characters`],
+    },
+    email: {
+      type: String,
+      required: [true, "Please enter Your email"],
+      validate: [validator.isEmail, "Please enter valid email"],
+    },
+    password: {
+      type: String,
+      required: [true, "Please enter Your password"],
+      minLength: [8, `password must contain 8 characters`],
+    },
+    image: {
+      imageUrl: { type: String, required: true },
+      id: { type: String, required: true },
+    },
+    role: {
+      type: String,
+      required: true,
+      default: "user",
+    },
   },
-  password: {
-    type: String,
-    required: [true, "Please enter Your password"],
-    minLength: [8, `password must contain 8 characters`],
-  },
-  email: {
-    type: String,
-    required: [true, "Please enter Your email"],
-    validate: [validator.isEmail, "Please enter valid email"],
-  },
-  image: {
-    imageUrl: { type: String, required: true },
-  },
-  role: {
-    type: String,
-    required: true,
-    default: "user",
-  },
-},{timestamps:true});
+  { timestamps: true }
+);
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {

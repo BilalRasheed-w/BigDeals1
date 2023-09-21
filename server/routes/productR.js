@@ -13,20 +13,27 @@ import {
   isAuthenticated as isLoggedIn,
   isAuthorized as isAdmin,
 } from "../middleware/isAuth.js";
+import upload from "../config/s3.js";
 
 const router = express.Router();
 
 router.get("/products", getAllProducts);
 router.put("/product/review", isLoggedIn, createReview);
 
-router.get('/product/reviews/:id',isLoggedIn,isAdmin,getReviews  )  
-router.delete("/product/review",isLoggedIn,isAdmin,deleteReview);
+router.get("/product/reviews/:id", isLoggedIn, isAdmin, getReviews);
+router.delete("/product/review", isLoggedIn, isAdmin, deleteReview);
 router
-.route("/product/:id")
-.get(getSingleProduct)
-.put(isLoggedIn, isAdmin, updateProduct)
+  .route("/product/:id")
+  .get(getSingleProduct)
+  .put(isLoggedIn, isAdmin, updateProduct)
   .delete(isLoggedIn, isAdmin, deleteProduct);
-  
-router.post("/product/new", isLoggedIn, isAdmin, createProduct);
+
+router.post(
+  "/product/new",
+  isLoggedIn,
+  isAdmin,
+  upload.single("image"),
+  createProduct
+);
 
 export default router;

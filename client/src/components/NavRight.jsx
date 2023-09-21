@@ -29,7 +29,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const NavRight = () => {
   const dispatch = useDispatch();
-  const { loading, error, user } = useSelector((state) => state.user);
+  const { loading, error, user, isAuth } = useSelector((state) => state.user);
   const bg = useColorModeValue("white", "gray.800");
   const mobileNav = useDisclosure();
   const handleSigOut = () => {
@@ -44,7 +44,7 @@ const NavRight = () => {
           color="brand.500"
           display={{ base: "none", md: "inline-flex" }}
         >
-          {user ? (
+          {isAuth ? (
             <>
               <HStack spacing={{ base: "0", md: "6" }}>
                 <IconButton
@@ -90,6 +90,11 @@ const NavRight = () => {
                       <MenuItem as={ReactLink} to={"/orders"}>
                         Orders
                       </MenuItem>
+                      {user.role === "admin" ? (
+                        <MenuItem as={ReactLink} to={"/product/new"}>
+                          Add New Product
+                        </MenuItem>
+                      ) : null}
                       <MenuDivider />
                       <MenuItem
                         as={ReactLink}
@@ -153,7 +158,7 @@ const NavRight = () => {
               onClick={mobileNav.onClose}
             />
 
-            {user ? (
+            {isAuth ? (
               <>
                 <Button w="full" variant="ghost">
                   Profile

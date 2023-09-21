@@ -26,6 +26,7 @@ const initialState = {
   user: localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user"))
     : null,
+  isAuth: localStorage.getItem("user") ? true : false,
 };
 
 const userSlice = createSlice({
@@ -34,6 +35,7 @@ const userSlice = createSlice({
   reducers: {
     SignOut: (state, action) => {
       state.user = null;
+      state.isAuth = false;
       localStorage.removeItem("user");
     },
     SignedUp: (state, action) => {
@@ -50,16 +52,18 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         localStorage.setItem("user", JSON.stringify(action.payload));
+        state.isAuth = true;
         state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.user = null;
+        state.isAuth = false;
         state.error = action.error.message;
       });
   },
 });
 
-export const { SignOut,SignedUp } = userSlice.actions;
+export const { SignOut, SignedUp } = userSlice.actions;
 
 export default userSlice.reducer;
