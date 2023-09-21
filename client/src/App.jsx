@@ -13,16 +13,16 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 
 // Product
-import Car from "./screens/Car";
 import NewProduct from "./screens/Product/NewProduct";
 import UpdateProduct from "./screens/Product/UpdateProduct";
+import Products from "./screens/Product/Products";
 
 const App = () => {
   return (
     <Router>
       <Navbar />
       <Routes>
-        {/* <Route index element={<Hero />} /> */}
+        <Route index element={<Products />} />
         {/* <Route index element={<Car />} /> */}
         {/* //!  user */}
         <Route path="/login" element={<Login />} />

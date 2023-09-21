@@ -4,7 +4,7 @@ import ApiFeatures from "../utils/apiFeatures.js";
 
 const getAllProducts = asyncHandler(async (req, res, next) => {
   const totalProducts = await Product.countDocuments();
-  const resultsPerPage = 5;
+  const resultsPerPage = 10;
   const apiFeatures = new ApiFeatures(Product.find(), req.query)
     .search()
     .filter()
