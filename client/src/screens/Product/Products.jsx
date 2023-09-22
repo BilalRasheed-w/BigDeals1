@@ -34,7 +34,7 @@ const Products = () => {
     dispatch(fetchProducts(url));
   }, []);
   return (
-    <div>
+    <>
       <Wrap justify={"center"} spacing={"7"} bg={"gray.100"} p={5}>
         {loading ? (
           <Loader />
@@ -56,8 +56,11 @@ const Products = () => {
               shadow={"2xl"}
               bg={"white"}
             >
-              <Link as={ReactLink} to={`/${item._id}`} alignSelf={"center"}>
-                {console.log(item)}
+              <Link
+                as={ReactLink}
+                to={`/product/${item._id}`}
+                alignSelf={"center"}
+              >
                 <Img src={item.images[0].imageUrl} w={"16rem"} h={"16rem"} />
               </Link>
               <Text fontWeight={"semibold"}>{item.name}</Text>
@@ -120,7 +123,7 @@ const Products = () => {
       ) : // <Text>no products yet</Text>
       null}}
       <Heading>this is products page</Heading> */}
-    </div>
+    </>
   );
 };
 
