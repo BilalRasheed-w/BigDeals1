@@ -21,23 +21,19 @@ import { motion } from "framer-motion";
 import { LuShieldCheck } from "react-icons/lu";
 import { FaShippingFast } from "react-icons/fa";
 import { RiCustomerService2Fill } from "react-icons/ri";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../store/slices/cartSlice";
+import { FaArrowRight } from "react-icons/fa";
 
 const ProductCard = () => {
   const [product, setProduct] = useState(null);
   const [Quantity, setQuantity] = useState(1);
-
-  const user = [
-    { name: "user1", ratings: 5 },
-    { name: "user2", ratings: 5 },
-    { name: "user3", ratings: 5 },
-    { name: "user4", ratings: 5 },
-    { name: "user5", ratings: 5 },
-    { name: "user5", ratings: 5 },
-  ];
+  const { cart } = useSelector((state) => state.cart);
 
   const { id } = useParams();
-
   const url = `http://localhost:5000/api/product/${id}`;
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -45,6 +41,7 @@ const ProductCard = () => {
         console.log(response.data.product);
         setProduct(response.data.product);
       } catch (error) {
+        p;
         console.log(error);
       }
     };
@@ -55,10 +52,15 @@ const ProductCard = () => {
     duration: "3000",
     position: "top",
   });
-  const addToCart = () => {
+  const handleClick = (product) => {
+    const itemExist = cart.find((prod) => prod._id === product._id);
+    if (itemExist) {
+      return toast({ status: "error", title: "item is already added to cart" });
+    }
+    dispatch(addToCart({ ...product, qty: Quantity || 1 }));
     toast({ status: "success", title: "added to cart" });
   };
-  const reviews = true;
+  const reviews = false;
   return (
     <div>
       {/* <Loader /> */}
@@ -71,32 +73,36 @@ const ProductCard = () => {
           >
             <Left
               product={product}
-              addToCart={addToCart}
+              handleClick={handleClick}
               setQuantity={setQuantity}
               Quantity={Quantity}
             />
             <Right product={product} />
           </Flex>
 
-          <Heading ms={"10"}>Reviews</Heading>
-          <Stack
-            rounded={"md"}
-            flexDir={"row"}
-            overflowX={"scroll"}
-            bg={"gray.200"}
-            py={10}
-            my={5}
-          >
-            <HStack spacing={"4"} px={10}>
-              <Reviews />
-              <Reviews />
-              <Reviews />
-              <Reviews />
-              <Reviews />
-              <Reviews />
-              <Reviews />
-            </HStack>
-          </Stack>
+          {reviews && (
+            <>
+              <Heading ms={"10"}>Reviews</Heading>
+              <Stack
+                rounded={"md"}
+                flexDir={"row"}
+                overflowX={"scroll"}
+                bg={"gray.200"}
+                py={10}
+                my={5}
+              >
+                <HStack spacing={"4"} px={10}>
+                  <Reviews />
+                  <Reviews />
+                  <Reviews />
+                  <Reviews />
+                  <Reviews />
+                  <Reviews />
+                  <Reviews />
+                </HStack>
+              </Stack>
+            </>
+          )}
         </>
       )}
     </div>
@@ -146,7 +152,7 @@ const Right = ({ product }) => (
   </Stack>
 );
 
-const Left = ({ product, addToCart, setQuantity, Quantity }) => (
+const Left = ({ product, handleClick, setQuantity, Quantity }) => (
   <VStack
     rounded={"lg"}
     shadow={"2xl"}
@@ -234,10 +240,12 @@ const Left = ({ product, addToCart, setQuantity, Quantity }) => (
       w={"full"}
       bg={"tomato"}
       color={"white"}
-      rightIcon={<ArrowForwardIcon />}
-      variant="unstyled"
+      rightIcon={<FaArrowRight />}
+      _hover={{ bg: "tomato" }}
       whileTap={{ scale: 0.9 }}
-      onClick={addToCart}
+      onClick={() => {
+        handleClick(product);
+      }}
     >
       Add to cart
     </Button>

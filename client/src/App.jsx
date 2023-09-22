@@ -17,6 +17,7 @@ import NewProduct from "./screens/Product/NewProduct";
 import UpdateProduct from "./screens/Product/UpdateProduct";
 import Products from "./screens/Product/Products";
 import ProductCard from "./screens/Product/ProductCard";
+import Cart from "./screens/Product/Cart";
 
 const App = () => {
   return (
@@ -33,11 +34,13 @@ const App = () => {
         <Route path="/password" element={<UpdatePassword />} />
         <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/reset" element={<ResetPassword />} />
+        <Route path="/cart" element={<Cart />} />
 
         {/* //@ Product */}
         <Route path="/product/:id" element={<ProductCard />} />
         <Route path="/admin/product/new" element={<NewProduct />} />
         <Route path="/admin/product/:id" element={<UpdateProduct />} />
+   
       </Routes>
     </Router>
   );

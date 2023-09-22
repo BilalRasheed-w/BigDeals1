@@ -19,9 +19,12 @@ import {
   MenuList,
   MenuItem,
   MenuDivider,
+  Icon,
+  Badge,
+  Link,
 } from "@chakra-ui/react";
 import { AiFillBell, AiOutlineMenu, AiOutlineSearch } from "react-icons/ai";
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown, FiShoppingCart } from "react-icons/fi";
 import { PiShoppingCartSimple } from "react-icons/pi";
 import { Link as ReactLink } from "react-router-dom";
 import { SignOut } from "../store/slices/userSlice";
@@ -30,11 +33,18 @@ import { useDispatch, useSelector } from "react-redux";
 const NavRight = () => {
   const dispatch = useDispatch();
   const { loading, error, user, isAuth } = useSelector((state) => state.user);
+  const { cart } = useSelector((state) => state.cart);
+
   const bg = useColorModeValue("white", "gray.800");
   const mobileNav = useDisclosure();
   const handleSigOut = () => {
     dispatch(SignOut());
   };
+
+  let cartItems = 0;
+  if (cart) {
+    cartItems = cart.length;
+  }
 
   return (
     <div>
@@ -110,18 +120,42 @@ const NavRight = () => {
             </>
           ) : (
             <>
-              <Button as={ReactLink} to={"/login"} variant="ghost">
-                Login
-              </Button>
-              <Button
-                as={ReactLink}
-                to={"/signup"}
-                _hover={{ transform: "scale(1.1)" }}
-                colorScheme="brand"
-                size="sm"
-              >
-                Sign up
-              </Button>
+              <HStack spacing={"1"}>
+                <HStack spacing={0} pos={"relative"}>
+                  <Link as={ReactLink} to="/cart">
+                    <Button variant="ghost" p={0}>
+                      <Icon fontSize={"3xl"} as={FiShoppingCart} />{" "}
+                    </Button>
+                    <Badge
+                      colorScheme="red"
+                      px={2}
+                      py={0}
+                      rounded={"lg"}
+                      fontSize={"xs"}
+                      pos={"absolute"}
+                      color={"white"}
+                      top={0}
+                      left={6}
+                      bg={"red.500"}
+                    >
+                      {cartItems}
+                    </Badge>
+                  </Link>
+                </HStack>
+                <Button as={ReactLink} to={"/login"} variant="ghost">
+                  Login
+                </Button>
+                <Button
+                  as={ReactLink}
+                  to={"/signup"}
+                  _hover={{ transform: "scale(1.1)" }}
+                  colorScheme="brand"
+                  size="sm"
+                  ms={1}
+                >
+                  Sign up
+                </Button>
+              </HStack>
             </>
           )}
         </HStack>

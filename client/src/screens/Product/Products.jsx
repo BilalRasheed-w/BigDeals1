@@ -20,19 +20,31 @@ import { fetchProducts } from "../../store/slices/productSlice";
 import Loader from "../../utils/Loader";
 import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
 import { FiShoppingCart } from "react-icons/fi";
-import { PiShoppingCartSimple } from "react-icons/pi";
 import { Link as ReactLink } from "react-router-dom";
 import { StarIcon } from "@chakra-ui/icons";
+import { addToCart } from "../../store/slices/cartSlice";
 
 const url = "http://localhost:5000/api/products";
 
 const Products = () => {
-  const toast = useToast();
+  const { cart } = useSelector((state) => state.cart);
+  const toast = useToast({ position: "top", duration: 2000, isClosable: true });
   const dispatch = useDispatch();
   const { loading, error, products } = useSelector((state) => state.product);
   useEffect(() => {
     dispatch(fetchProducts(url));
   }, []);
+  const handleClick = (product) => {
+    const itemExist = cart.find((prod) => prod._id === product._id);
+    if (itemExist) {
+      return toast({ status: "error", title: "item is already added to cart" });
+    }
+    dispatch(addToCart({ ...product, qty: 1 }));
+    toast({
+      status: "success",
+      title: "added to cart",
+    });
+  };
   return (
     <>
       <Wrap justify={"center"} spacing={"7"} bg={"gray.100"} p={5}>
@@ -44,7 +56,7 @@ const Products = () => {
           products.map((item, index) => (
             <WrapItem
               _hover={{
-                transform: "scale(1.07)",
+                transform: "scale(1.03)",
                 transition: "transform 0.3s ease",
               }}
               transition="transform 0.4s ease"
@@ -97,13 +109,7 @@ const Products = () => {
                   p={0}
                   fontSize={"2xl"}
                   onClick={() => {
-                    toast({
-                      status: "success",
-                      position: "top",
-                      duration: 2000,
-                      isClosable: true,
-                      title: "added to cart",
-                    });
+                    handleClick(item);
                   }}
                 >
                   <Icon as={FiShoppingCart} />
