@@ -141,13 +141,7 @@ const Reviews = () => (
 );
 
 const Right = ({ product }) => (
-  <Stack
-    borderLeft={"1px"}
-    borderLeftColor={"gray.200"}
-    width={{ base: "100vw", md: "50%" }}
-    pt={4}
-    boxShadow={"lg"}
-  >
+  <Stack width={{ base: "100vw", md: "50%" }} pt={4}>
     <Img src={product.images[0].imageUrl} alt={product.name} h={"30rem"} />
   </Stack>
 );

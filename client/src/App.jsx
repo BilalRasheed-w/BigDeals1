@@ -18,15 +18,18 @@ import UpdateProduct from "./screens/Product/UpdateProduct";
 import Products from "./screens/Product/Products";
 import ProductCard from "./screens/Product/ProductCard";
 import Cart from "./screens/Product/Cart";
+import ProtectedRoutes from "./utils/ProtectedRoutes";
+import Dashboard from "./screens/admin/Dashboard";
+import AdminProducts from "./screens/admin/AdminProducts";
+import AllUsers from "./screens/admin/AdminUsers";
+import AdminOrders from "./screens/admin/adminOrders";
 
 const App = () => {
   return (
     <Router>
       <Navbar />
-
       <Routes>
-        <Route index element={<Products />} />
-        {/* <Route index element={<Car />} /> */}
+        <Route path="/" element={<Hero />} />
         {/* //!  user */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -38,9 +41,18 @@ const App = () => {
 
         {/* //@ Product */}
         <Route path="/product/:id" element={<ProductCard />} />
-        <Route path="/admin/product/new" element={<NewProduct />} />
+        <Route
+          path="/admin/product/new"
+          element={<ProtectedRoutes Component={NewProduct} />}
+        />
+
+        {/*//! admin */}
+        <Route path="/admin" element={<Dashboard />} />
         <Route path="/admin/product/:id" element={<UpdateProduct />} />
-   
+        {/*//! admin */}
+        <Route path="/admin/products" element={<AdminProducts />} />
+        <Route path="/admin/users" element={<AllUsers />} />
+        <Route path="/admin/orders" element={<AdminOrders />} />
       </Routes>
     </Router>
   );

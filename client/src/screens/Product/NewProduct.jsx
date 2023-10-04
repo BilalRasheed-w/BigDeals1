@@ -23,6 +23,7 @@ import { useState, useRef } from "react";
 import { Link as ReactLink } from "react-router-dom";
 import "../../index.css";
 import axios from "axios";
+import { useEffect } from "react";
 
 const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 const url = "http://localhost:5000/api/product/new";
@@ -62,6 +63,8 @@ export default function NewProduct() {
         withCredentials: true,
       });
       if (response) setLoading(false);
+      console.log(response);
+
       if (response.status === 200) {
         toast({
           title: "Product added successfully",
@@ -80,9 +83,8 @@ export default function NewProduct() {
           fileRef.current.value = "";
         }
       }
-
-      console.log(response);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
@@ -123,7 +125,7 @@ export default function NewProduct() {
             setDescription={setDescription}
             description={Description}
           />
-          <ProductCategory setCategory={setCategory} />
+          <ProductCategory setCategory={setCategory} Category={Category} />
           <ProductStock setStock={setStock} Stock={Stock} />
           <ProductImage
             handleFileUpload={handleFileUpload}
@@ -194,10 +196,11 @@ const ProductDescription = ({ setDescription, description }) => (
   </FormControl>
 );
 
-const ProductCategory = ({ setCategory }) => (
+const ProductCategory = ({ setCategory, Category }) => (
   <FormControl>
     <FormLabel>Category</FormLabel>
     <Select
+      value={Category}
       placeholder="Select Category"
       rounded={"sm"}
       size={{ md: "xs", lg: "sm" }}

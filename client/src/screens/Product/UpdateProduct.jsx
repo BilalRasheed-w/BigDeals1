@@ -16,46 +16,81 @@ import {
   NumberDecrementStepper,
   FormErrorMessage,
   Text,
+  useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link as ReactLink } from "react-router-dom";
 import "../../index.css";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 
 export default function UpdateProduct() {
+  const { id } = useParams();
+  const url = `http://localhost:5000/api/product/${id}`;
+  const toast = useToast({
+    duration: "3000",
+    position: "top",
+    isClosable: true,
+  });
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [Category, setCategory] = useState();
-  const [Price, setPrice] = useState(1);
-  const [Stock, setStock] = useState(1);
+  const [Price, setPrice] = useState();
+  const [Stock, setStock] = useState();
   const [image, setImage] = useState();
   const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(url);
+        const { name, description, price, category, stock } =
+          response.data.product;
+        if (response.status === 200) {
+          setName(name);
+          setPrice(price);
+          setCategory(category);
+          setDescription(description);
+          setStock(stock);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProducts();
+  }, [id]);
 
   const handleFileUpload = (e) => {
     setImage(e.target.files[0]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!image) return setImageError(true);
-    if (!allowedTypes.includes(image.type)) return setImageError(true);
-    if (allowedTypes.includes(image.type)) setImageError(false);
+    if (image) {
+      if (!allowedTypes.includes(image.type)) return setImageError(true);
+      if (allowedTypes.includes(image.type)) setImageError(false);
+    }
     const data = {
       name,
       description,
-      Category,
-      Price,
-      Stock,
+      category: Category,
+      price: Price,
+      stock: Stock,
       image,
     };
-    setName(""),
-      setDescription(""),
-      setCategory(""),
-      setPrice(1),
-      setStock(1),
-      setImage(""),
-      console.log(data);
+    console.log(data);
+
+    try {
+      const response = await axios.put(url, data, { withCredentials: true });
+      if (response.status === 200) {
+        toast({ title: "product updated successfully", status: "success" });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -92,7 +127,7 @@ export default function UpdateProduct() {
           setDescription={setDescription}
           description={description}
         />
-        <ProductCategory setCategory={setCategory} />
+        <ProductCategory setCategory={setCategory} Category={Category} />
         <ProductStock setStock={setStock} Stock={Stock} />
         <ProductImage
           handleFileUpload={handleFileUpload}
@@ -120,7 +155,7 @@ const AddNowButton = ({ handleSubmit }) => (
   </Button>
 );
 
-const ProductName = ({ setName, name }) => (
+const ProductName = ({ setName, name, product }) => (
   <FormControl isRequired>
     <FormLabel>Product Name</FormLabel>
     <Input
@@ -162,10 +197,11 @@ const ProductDescription = ({ setDescription, description }) => (
   </FormControl>
 );
 
-const ProductCategory = ({ setCategory }) => (
+const ProductCategory = ({ setCategory, Category }) => (
   <FormControl>
     <FormLabel>Category</FormLabel>
     <Select
+      value={Category}
       placeholder="Select Category"
       rounded={"sm"}
       size={{ md: "xs", lg: "sm" }}
@@ -217,7 +253,6 @@ const PriceInput = ({ setPrice, Price }) => (
       size={{ md: "xs", lg: "sm" }}
       type="number"
       min={"1"}
-      max={"1000"}
       onChange={(value) => {
         setPrice(Number(value));
       }}
@@ -245,10 +280,10 @@ const PriceInput = ({ setPrice, Price }) => (
         color={"white"}
         size={"xs"}
         onClick={() => {
-          setPrice(199);
+          setPrice(9999);
         }}
       >
-        199
+        9999
       </Button>
       <Button
         fontSize={"xs"}
@@ -256,10 +291,10 @@ const PriceInput = ({ setPrice, Price }) => (
         color={"white"}
         size={"xs"}
         onClick={() => {
-          setPrice(499);
+          setPrice(19999);
         }}
       >
-        499
+        19999
       </Button>
       <Button
         fontSize={"xs"}
@@ -267,10 +302,10 @@ const PriceInput = ({ setPrice, Price }) => (
         color={"white"}
         size={"xs"}
         onClick={() => {
-          setPrice(999);
+          setPrice(49999);
         }}
       >
-        999
+        49999
       </Button>
     </HStack>
   </>

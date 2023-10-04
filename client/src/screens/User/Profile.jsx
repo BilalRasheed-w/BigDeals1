@@ -19,6 +19,7 @@ import { Link as ReactLink } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { updateProfile } from "../../store/slices/userSlice";
 const Schema = {
   name: Yup.string()
     .min(4, "name must be atleast 4 letters ")
@@ -30,7 +31,7 @@ const Schema = {
 
 export default function Profile() {
   const dispatch = useDispatch();
-  const { loading, error, user } = useSelector((state) => state.user);
+  const {user } = useSelector((state) => state.user);
 
   const {
     values,
@@ -57,7 +58,9 @@ export default function Profile() {
           },
           { withCredentials: true }
         );
-        console.log(response);
+        if (response.status === 200) {
+          dispatch(updateProfile({ email: values.email, name: values.name }));
+        }
       } catch (error) {
         console.log(error);
       }

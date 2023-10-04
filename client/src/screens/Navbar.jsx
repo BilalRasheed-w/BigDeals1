@@ -21,12 +21,7 @@ const Navbar = () => {
   const mobileNav = useDisclosure();
   return (
     <>
-      <chakra.header
-        bg={bg}
-        w="full"
-        px={{ base: 2, sm: 4, md: 6 }}
-        py={3}
-      >
+      <chakra.header bg={bg} w="full" px={{ base: 2, sm: 4, md: 6 }} py={3}>
         <Flex alignItems="center" justifyContent="space-between" mx="auto">
           <Left />
           <Middle />
