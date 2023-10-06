@@ -133,7 +133,7 @@ const Cart = () => {
           </VStack>
 
           <VStack
-            w={"25%"}
+            w={"27%"}
             h={"30rem"}
             shadow={"2xl"}
             bg={"white"}
@@ -143,7 +143,6 @@ const Cart = () => {
             px={10}
           >
             <Heading fontSize={"3xl"}>Cart items</Heading>
-
             <HStack w={"full"} fontSize={"xl"} justifyContent={"space-between"}>
               <Text>subtotal</Text>
               <Text>{subTotal.toLocaleString("en-IN")}</Text>
@@ -166,11 +165,11 @@ const Cart = () => {
             </HStack>
             {express ? (
               <Text color={"tomato"} fontSize={"xs"} fontWeight={"bold"}>
-                (delivered in 24 hours)
+                ( delivered in 24 hours )
               </Text>
             ) : (
               <Text color={"tomato"} fontSize={"xs"} fontWeight={"bold"}>
-                (shipping is free for orders above 30,000)
+                ( shipping is free for orders above 30,000 )
               </Text>
             )}
 
@@ -207,7 +206,7 @@ const Cart = () => {
         <Alert status="warning">
           <AlertIcon />
           No Products yet,{" "}
-          <Link ms={1} as={ReactLink} to={"/"}>
+          <Link ms={1} as={ReactLink} fontSize={"sm"} to={"/"}>
             click here to add products
           </Link>
         </Alert>

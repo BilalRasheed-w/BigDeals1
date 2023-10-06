@@ -25,7 +25,7 @@ router.delete("/product/review", isLoggedIn, isAdmin, deleteReview);
 router
   .route("/product/:id")
   .get(getSingleProduct)
-  .put(isLoggedIn, isAdmin, updateProduct)
+  .put(isLoggedIn, isAdmin, upload.single("image"), updateProduct)
   .delete(isLoggedIn, isAdmin, deleteProduct);
 
 router.post(

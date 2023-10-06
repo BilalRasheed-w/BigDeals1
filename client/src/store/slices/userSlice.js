@@ -42,7 +42,14 @@ const userSlice = createSlice({
       state.user = action.payload;
       localStorage.setItem("user", JSON.stringify(action.payload));
     },
+    updateProfile: (state, action) => {
+      const { _id, name, email } = action.payload;
+      state.user.name = name;
+      state.user.email = email;
+      localStorage.setItem("user", JSON.stringify(state.user));
+    },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state, action) => {
@@ -64,6 +71,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { SignOut, SignedUp } = userSlice.actions;
+export const { SignOut, SignedUp,updateProfile } = userSlice.actions;
 
 export default userSlice.reducer;

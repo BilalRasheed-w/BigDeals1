@@ -8,11 +8,15 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  useToast,
+  Spinner,
+  HStack,
 } from "@chakra-ui/react";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import { useState } from "react";
 
 const Schema = {
   oldPassword: Yup.string()
@@ -27,12 +31,15 @@ const Schema = {
 };
 
 export default function UpdatePassword() {
+  const toast = useToast({ position: "top", duration: 2000, isClosable: true });
+  const [loading, setLoading] = useState(false);
+  const [incorrect, setIncorrect] = useState(false);
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: { oldPassword: "", newPassword: "", confirmPassword: "" },
       validationSchema: Yup.object(Schema),
       onSubmit: async (values, action) => {
-        console.log(values);
+        setLoading(true);
         try {
           const response = await axios.put(
             "http://localhost:5000/api/user/password",
@@ -43,8 +50,20 @@ export default function UpdatePassword() {
             },
             { withCredentials: true }
           );
-          console.log(response);
+          if (response) setLoading(false);
+          if (response.status === 200) {
+            toast({
+              status: "success",
+              title: "password updated successfully",
+            });
+          }
+          i;
         } catch (error) {
+          setLoading(false);
+          if (error.response.status) {
+            setIncorrect(true);
+          }
+          console.log(error.message);
           console.log(error);
         }
       },
@@ -64,9 +83,12 @@ export default function UpdatePassword() {
         mt={6}
         mb={12}
       >
-        <Heading lineHeight={1.1} fontSize={{ base: "2xl", md: "3xl" }}>
-          Update Password
-        </Heading>
+        <HStack justifyContent={"space-between"}>
+          <Heading lineHeight={1.1} fontSize={{ base: "2xl", md: "3xl" }}>
+            Update Password
+          </Heading>
+          {loading ? <Spinner alignItems={"end"} color="red.500" /> : null}
+        </HStack>
         <FormControl isRequired>
           <FormLabel>Old Password</FormLabel>
           <Input
@@ -80,6 +102,11 @@ export default function UpdatePassword() {
           {touched.oldPassword && errors.oldPassword ? (
             <Text fontSize={"xs"} color={"red.500"}>
               {errors.oldPassword}
+            </Text>
+          ) : null}
+          {incorrect ? (
+            <Text fontSize={"xs"} color={"red.500"}>
+              Incorrect oldPassword
             </Text>
           ) : null}
         </FormControl>

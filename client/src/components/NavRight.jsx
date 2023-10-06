@@ -26,12 +26,13 @@ import {
 import { AiFillBell, AiOutlineMenu, AiOutlineSearch } from "react-icons/ai";
 import { FiChevronDown, FiShoppingCart } from "react-icons/fi";
 import { PiShoppingCartSimple } from "react-icons/pi";
-import { Link as ReactLink } from "react-router-dom";
+import { Link as ReactLink, useNavigate } from "react-router-dom";
 import { SignOut } from "../store/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const NavRight = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading, error, user, isAuth } = useSelector((state) => state.user);
   const { cart } = useSelector((state) => state.cart);
 
@@ -39,6 +40,7 @@ const NavRight = () => {
   const mobileNav = useDisclosure();
   const handleSigOut = () => {
     dispatch(SignOut());
+    navigate('/')
   };
 
   let cartItems = 0;
@@ -57,13 +59,27 @@ const NavRight = () => {
           {isAuth ? (
             <>
               <HStack spacing={{ base: "0", md: "6" }}>
-                <IconButton
-                  fontSize="3xl"
-                  size="lg"
-                  variant="ghost"
-                  aria-label="open menu"
-                  icon={<PiShoppingCartSimple />}
-                />
+                <HStack spacing={0} pos={"relative"}>
+                  <Link as={ReactLink} to="/cart">
+                    <Button variant="ghost" p={0}>
+                      <Icon fontSize={"3xl"} as={FiShoppingCart} />
+                    </Button>
+                    <Badge
+                      colorScheme="red"
+                      px={2}
+                      py={0}
+                      rounded={"lg"}
+                      fontSize={"xs"}
+                      pos={"absolute"}
+                      color={"white"}
+                      top={0}
+                      left={6}
+                      bg={"red.500"}
+                    >
+                      {cartItems}
+                    </Badge>
+                  </Link>
+                </HStack>
                 <Flex alignItems={"center"}>
                   <Menu>
                     <MenuButton
@@ -78,7 +94,14 @@ const NavRight = () => {
                           spacing="1px"
                           ml="2"
                         >
-                          <Text fontSize="sm">{user.name}</Text>
+                          <Text
+                            fontSize="sm"
+                            textTransform={"capitalize"}
+                            fontWeight={"bold"}
+                            letterSpacing={"wider"}
+                          >
+                            {user.name}
+                          </Text>
                           {user.role === "admin" ? (
                             <Text fontSize="xs" color="gray.600">
                               Admin
@@ -91,6 +114,11 @@ const NavRight = () => {
                       </HStack>
                     </MenuButton>
                     <MenuList bg={"white"} borderColor={"gray.200"}>
+                      {user.role === "admin" ? (
+                        <MenuItem as={ReactLink} to={"/admin"}>
+                          Dashboard
+                        </MenuItem>
+                      ) : null}
                       <MenuItem as={ReactLink} to={"/profile"}>
                         Profile
                       </MenuItem>
@@ -101,15 +129,25 @@ const NavRight = () => {
                         Orders
                       </MenuItem>
                       {user.role === "admin" ? (
-                        <MenuItem as={ReactLink} to={"/product/new"}>
+                        <MenuItem as={ReactLink} to={"/admin/products"}>
+                          All Products
+                        </MenuItem>
+                      ) : null}
+
+                      {user.role === "admin" ? (
+                        <MenuItem as={ReactLink} to={"/admin/product/new"}>
                           Add New Product
                         </MenuItem>
                       ) : null}
+                      {user.role === "admin" ? (
+                        <MenuItem as={ReactLink} to={"/admin/users"}>
+                          All users
+                        </MenuItem>
+                      ) : null}
+
                       <MenuDivider />
                       <MenuItem
-                        as={ReactLink}
-                        to={"/signout"}
-                        onClick={handleSigOut}
+                      onClick={handleSigOut}
                       >
                         Sign out
                       </MenuItem>
@@ -124,7 +162,7 @@ const NavRight = () => {
                 <HStack spacing={0} pos={"relative"}>
                   <Link as={ReactLink} to="/cart">
                     <Button variant="ghost" p={0}>
-                      <Icon fontSize={"3xl"} as={FiShoppingCart} />{" "}
+                      <Icon fontSize={"3xl"} as={FiShoppingCart} />
                     </Button>
                     <Badge
                       colorScheme="red"
