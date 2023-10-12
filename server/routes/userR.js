@@ -18,7 +18,6 @@ import {
   isAuthenticated as isLoggedIn,
   isAuthorized as isAdmin,
 } from "../middleware/isAuth.js";
-import { verifyJwt } from "../utils/sendEmail.js";
 import upload from "../config/s3.js";
 
 const router = express.Router();
@@ -32,7 +31,7 @@ router.put("/user/password", isLoggedIn, updatePassword);
 
 router.post("/user/forgot", forgotPassword);
 
-router.post("/user/reset/:token", verifyJwt, resetPassword);
+router.put("/user/reset/:token", resetPassword);
 
 // admin
 router.get("/users", isLoggedIn, isAdmin, getAllUsers);
@@ -42,6 +41,6 @@ router
   .put(isLoggedIn, isAdmin, updateUser)
   .delete(isLoggedIn, isAdmin, deleteUser);
 
-// router.get("/redirect", redirect);
+
 
 export default router;

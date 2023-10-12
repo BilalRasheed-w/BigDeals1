@@ -4,14 +4,19 @@ import ApiFeatures from "../utils/apiFeatures.js";
 
 const getAllProducts = asyncHandler(async (req, res, next) => {
   const totalProducts = await Product.countDocuments();
-  const resultsPerPage = 10;
+  const resultsPerPage = 12;
   const apiFeatures = new ApiFeatures(Product.find(), req.query)
     .search()
     .filter()
     .pagination(resultsPerPage);
   const products = await apiFeatures.query;
   const filtered = products.length;
-  res.status(200).json({ totalProducts, filtered, products });
+  res.status(200).json({ totalProducts, resultsPerPage, filtered, products });
+});
+
+const AdminProducts = asyncHandler(async (req, res, next) => {
+  const allProducts = await Product.find();
+  res.status(200).json({ allProducts });
 });
 
 const createProduct = asyncHandler(async (req, res, next) => {
@@ -141,4 +146,5 @@ export {
   getReviews,
   createReview,
   deleteReview,
+  AdminProducts,
 };

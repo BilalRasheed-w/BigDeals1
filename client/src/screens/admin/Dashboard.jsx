@@ -14,81 +14,72 @@ import { Link as ReactLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import {
+  fetchAllProducts,
   fetchOrders,
-  fetchProducts,
   fetchUsers,
 } from "../../store/slices/adminSlice";
-const Dashboard = () => {
-  const { loading, error, products, orders, users } = useSelector(
-    (state) => state.admin
-  );
-  const allUsers = users.length;
-  const allProducts = products.length;
-  let totalProductsPrice = 0;
-  products.forEach((item) => (totalProductsPrice += item.price));
 
-  const allOrders = orders.length || 1;
+const Dashboard = () => {
+  const {
+    loading,
+    error,
+    orders,
+    products,
+    users,
+    totalProducts,
+    totalUsers,
+    totalOrders,
+    totalOrdersPrice,
+  } = useSelector((state) => state.admin);
 
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(fetchProducts());
+    dispatch(fetchAllProducts());
     dispatch(fetchOrders());
     dispatch(fetchUsers());
   }, [dispatch]);
+
+  let totalProductsPrice = 0;
+  if (products.length >= 1) {
+    products.forEach((item) => {
+      totalProductsPrice += item.price;
+    });
+  }
+
   return (
-    <div>
-      <Stack p={4} bg={"gray.50"} gap={2} flexDir={"row"}>
+    <>
+      <Stack
+        p={4}
+        px={{ base: 8, md: 0 }}
+        bg={"gray.50"}
+        gap={2}
+        flexDir={{ base: "column", md: "row" }}
+      >
         <AdminSideBar />
-        <VStack rounded={"md"} border={"1px"} w={"77%"} py={2} bg={"gray.100"}>
-          <HStack justifyContent={"space-between"} w={"full"} px={10}>
-            <Link
-              as={ReactLink}
-              to={"/admin/products"}
-              _hover={{ textDecor: "none", transform: "scale(1.02)" }}
-            >
-              <Flex
-                bgColor={"#14539a"}
-                color={"white"}
-                w={"16rem"}
-                px={4}
-                pb={4}
-                rounded={"xl"}
-                flexDirection={"column"}
-              >
-                <HStack w={"full"} justifyContent={"space-between"} my={2}>
-                  <Text fontSize={"2xl"} fontWeight={"bold"}>
-                    All Products
-                  </Text>
-                  <Text
-                    alignSelf={"end"}
-                    fontWeight={"bold"}
-                    fontSize={"4xl"}
-                    w={"fit-content"}
-                  >
-                    {allProducts}
-                  </Text>
-                </HStack>
-                <HStack w={"full"} justifyContent={"space-between"}>
-                  <Text
-                    fontSize={"md"}
-                    border={"1px"}
-                    p={1}
-                    rounded={"md"}
-                    fontWeight={"semi-bold"}
-                  >
-                    Total worth
-                  </Text>
-                  <Text
-                    alignSelf={"end"}
-                    color={"yellow"}
-                    fontSize={"2xl"}
-                    w={"fit-content"}
-                  >
-                    {totalProductsPrice.toLocaleString("en-IN")}
-                  </Text>
-                </HStack>
-              </Flex>
-            </Link>
+        <VStack
+          rounded={"md"}
+          border={{ md: "1px" }}
+          w={{ base: "full", md: "77%" }}
+          py={2}
+          bg={"gray.100"}
+          mb={{ base: 16 }}
+        >
+          <HStack
+            justifyContent={"space-between"}
+            flexDir={{ base: "column", md: "column",lg:"row" }}
+            w={"full"}
+            px={10}
+            spacing={{ base: 2, md: "none" }}
+          >
+            <DisplayBox
+              path={"/admin/products"}
+              name={"All Products"}
+              allValue={totalProducts}
+              totalProductsPrice={totalProductsPrice}
+              subName={"Total Worth"}
+            />
+
             <Link
               as={ReactLink}
               to={"/admin/users"}
@@ -102,8 +93,8 @@ const Dashboard = () => {
                 rounded={"xl"}
                 flexDirection={"column"}
               >
-                <Text fontSize={"2xl"} fontWeight={"bold"}>
-                  All Users{" "}k
+                <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight={"bold"}>
+                  All Users
                 </Text>
                 <Text
                   alignSelf={"end"}
@@ -111,63 +102,76 @@ const Dashboard = () => {
                   fontSize={"4xl"}
                   w={"fit-content"}
                 >
-                  {allUsers}
+                  {totalUsers}
                 </Text>
               </Flex>
             </Link>
-            <Link
-              as={ReactLink}
-              to={"/admin/orders"}
-              _hover={{ textDecor: "none", transform: "scale(1.02)" }}
-            >
-              <Flex
-                bgColor={"#14539a"}
-                color={"white"}
-                w={"16rem"}
-                px={4}
-                pb={4}
-                rounded={"xl"}
-                flexDirection={"column"}
-              >
-                <HStack w={"full"} justifyContent={"space-between"} my={2}>
-                  <Text fontSize={"2xl"} fontWeight={"bold"}>
-                    All Orders
-                  </Text>
-                  <Text
-                    alignSelf={"end"}
-                    fontWeight={"bold"}
-                    fontSize={"4xl"}
-                    w={"fit-content"}
-                  >
-                    {allOrders}
-                  </Text>
-                </HStack>
-                <HStack w={"full"} justifyContent={"space-between"}>
-                  <Text
-                    fontSize={"md"}
-                    border={"1px"}
-                    p={1}
-                    rounded={"md"}
-                    fontWeight={"semi-bold"}
-                  >
-                    Total Amount
-                  </Text>
-                  <Text
-                    alignSelf={"end"}
-                    color={"yellow"}
-                    fontSize={"2xl"}
-                    w={"fit-content"}
-                  >
-                    {totalProductsPrice.toLocaleString("en-IN")}
-                  </Text>
-                </HStack>
-              </Flex>
-            </Link>
+
+            <DisplayBox
+              path={"/admin/orders"}
+              name={"All Orders"}
+              allValue={totalOrders}
+              totalProductsPrice={totalOrdersPrice}
+              subName={"Total Amount"}
+            />
           </HStack>
         </VStack>
       </Stack>
-    </div>
+    </>
   );
 };
 
 export default Dashboard;
+
+const DisplayBox = ({ path, name, allValue, totalProductsPrice, subName }) => (
+  <Link
+    as={ReactLink}
+    to={path}
+    _hover={{ textDecor: "none", transform: "scale(1.02)" }}
+    
+  >
+    
+    <Flex
+      bgColor={"#14539a"}
+      color={"white"}
+      w={"16rem"}
+      px={4}
+      pb={5}
+      rounded={"xl"}
+      flexDirection={"column"}
+    >
+      <HStack w={"full"} justifyContent={"space-between"} my={2}>
+        <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight={"bold"}>
+          {name}
+        </Text>
+        <Text
+          alignSelf={"end"}
+          fontWeight={"bold"}
+          fontSize={{ base: "3xl", md: "4xl" }}
+          w={"fit-content"}
+        >
+          {allValue}
+        </Text>
+      </HStack>
+      <HStack w={"full"} justifyContent={"space-between"}>
+        <Text
+          fontSize={"md"}
+          border={"1px"}
+          p={1}
+          rounded={"md"}
+          fontWeight={"semi-bold"}
+        >
+          {subName}
+        </Text>
+        <Text
+          alignSelf={"end"}
+          color={"yellow"}
+          fontSize={"2xl"}
+          w={"fit-content"}
+        >
+          {totalProductsPrice.toLocaleString("en-IN")}
+        </Text>
+      </HStack>
+    </Flex>
+  </Link>
+);

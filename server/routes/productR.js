@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  AdminProducts,
   createProduct,
   createReview,
   deleteProduct,
@@ -17,6 +18,7 @@ import upload from "../config/s3.js";
 
 const router = express.Router();
 
+router.get("/admin/products", isLoggedIn, isAdmin, AdminProducts);
 router.get("/products", getAllProducts);
 router.put("/product/review", isLoggedIn, createReview);
 

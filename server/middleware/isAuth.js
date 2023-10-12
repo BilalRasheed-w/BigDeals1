@@ -14,7 +14,7 @@ const isAuthenticated = asyncHandler(async (req, res, next) => {
 
 const isAuthorized = asyncHandler(async (req, res, next) => {
   const user = req.user;
-  if (user.role !== "admin") throw new customError("Forbidden request", 403);
+  if (user.role !== "admin") throw new customError("Forbidden request despa", 403);
   next();
 });
 

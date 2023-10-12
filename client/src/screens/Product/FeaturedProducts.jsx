@@ -12,37 +12,29 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
-
-// file imports
-import { fetchProducts } from "../../store/slices/productSlice";
-import { addToCart } from "../../store/slices/cartSlice";
-import AlertComponent from "../../utils/Alert";
-import Loader from "../../utils/Loader";
-import "./pagination.css";
-
-// hooks imports
-import { useEffect, useState } from "react";
+// hooks
+import { useEffect } from "react";
+import { Link as ReactLink, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as ReactLink, useParams, useLocation } from "react-router-dom";
-import Pagination from "react-js-pagination";
+
+// styles
 import { StarIcon } from "@chakra-ui/icons";
 import { FiShoppingCart } from "react-icons/fi";
 
-const Products = () => {
-  // hooks
-  const dispatch = useDispatch();
-  const { keyword } = useParams();
-  const [currentPage, setCurrentPage] = useState(1);
+// others
+import Loader from "../../utils/Loader";
+import AlertComponent from "../../utils/Alert";
+import { addToCart } from "../../store/slices/cartSlice";
+import { fetchProducts } from "../../store/slices/productSlice";
 
-  const { loading, error, products, productsCount, resultsPerPage } =
-    useSelector((state) => state.product);
+const FeaturedProducts = () => {
+  const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.cart);
   const toast = useToast({ position: "top", duration: 2000, isClosable: true });
-  const location = useLocation();
-
+  const { loading, error, products } = useSelector((state) => state.product);
   useEffect(() => {
-    dispatch(fetchProducts({ keyword, currentPage }));
-  }, [keyword, currentPage]);
+    dispatch(fetchProducts({ keyword: "", currentPage: 1 }));
+  }, []);
 
   const handleClick = (product) => {
     const itemExist = cart.find((prod) => prod._id === product._id);
@@ -63,12 +55,6 @@ const Products = () => {
     });
   };
 
-  const setCurrentPageNo = (e) => {
-    setCurrentPage(e);
-  };
-
-  const isLastPage = currentPage === Math.ceil(productsCount / resultsPerPage);
-
   return (
     <>
       <Wrap
@@ -76,18 +62,19 @@ const Products = () => {
         justify={"center"}
         spacing={"7"}
         bg={"gray.100"}
-        px={{ base: 5, lg: "20" }}
-        py={8}
+        p={5}
+        px={{lg:20}}
+        pb={16}
       >
         {loading ? (
-          <Box h={"70vh"}>
+          <Flex height={"60vh"}>
             <Loader />
-          </Box>
+          </Flex>
         ) : error ? (
           <Box h={"70vh"} w={"full"}>
             <AlertComponent status={"error"} message={error} />
           </Box>
-        ) : products && products.length > 0 ? (
+        ) : products && products.length >= 1 ? (
           products.map((item, index) => (
             <>
               <WrapItem
@@ -104,24 +91,30 @@ const Products = () => {
                 shadow={"2xl"}
                 bg={"white"}
               >
-                <Link
-                  as={ReactLink}
-                  to={`/product/${item._id}`}
-                  alignSelf={"center"}
-                >
-                  <Img src={item.images[0].imageUrl} w={"16rem"} h={"14rem"} />
-                </Link>
-                <Text fontWeight={"semibold"}>{item.name}</Text>
-                <Text fontWeight={"semibold"}>
-                  <Text
-                    display={"inline-block"}
-                    fontWeight={"medium"}
-                    fontSize={"lg"}
+                <Box h={"19rem"} p={{ base: 1, md: "none" }}>
+                  <Link
+                    as={ReactLink}
+                    to={`/product/${item._id}`}
+                    alignSelf={"center"}
                   >
-                    ₹
-                  </Text>{" "}
-                  {item.price.toLocaleString("en-IN")}
-                </Text>
+                    <Img
+                      src={item.images[0].imageUrl}
+                      w={"16rem"}
+                      h={"14rem"}
+                    />
+                  </Link>
+                  <Text fontWeight={"semibold"}>{item.name}</Text>
+                  <Text fontWeight={"semibold"}>
+                    <Text
+                      display={"inline-block"}
+                      fontWeight={"medium"}
+                      fontSize={"lg"}
+                    >
+                      ₹
+                    </Text>{" "}
+                    {item.price.toLocaleString("en-IN")}
+                  </Text>
+                </Box>
                 <Divider />
                 <HStack
                   my={2}
@@ -146,53 +139,16 @@ const Products = () => {
             </>
           ))
         ) : (
-          <Box h={"70vh"} w={"full"}>
-            <AlertComponent
-              status={"error"}
-              message={"Please refresh to see products"}
-            />
-          </Box>
+          <Text textTransform={"capitalize"} h={"100vh"} fontSize={"3xl"}>
+            no products yet...please refresh to fetch products
+          </Text>
         )}
       </Wrap>
-      <Box className="paginationBox" py={10}>
-        {products.length >= resultsPerPage && (
-          <Pagination
-            activePage={currentPage}
-            itemsCountPerPage={resultsPerPage}
-            totalItemsCount={productsCount}
-            onChange={setCurrentPageNo}
-            prevPageText={"<"}
-            nextPageText={">"}
-            firstPageText={"1st"}
-            lastPageText={"last"}
-            itemClass="page-item"
-            linkClass="page-link"
-            activeClass="pageItemActive"
-            activeLinkClass="pageLinkActive"
-          />
-        )}
-        {isLastPage && (
-          <Pagination
-            activePage={currentPage}
-            itemsCountPerPage={resultsPerPage}
-            totalItemsCount={productsCount}
-            onChange={setCurrentPageNo}
-            prevPageText={"<"}
-            nextPageText={">"}
-            firstPageText={"1st"}
-            lastPageText={"last"}
-            itemClass="page-item"
-            linkClass="page-link"
-            activeClass="pageItemActive"
-            activeLinkClass="pageLinkActive"
-          />
-        )}
-      </Box>
     </>
   );
 };
 
-export default Products;
+export default FeaturedProducts;
 
 const RatingsComponent = ({ item }) => (
   <Flex alignItems={"center"} gap={1}>
@@ -203,7 +159,8 @@ const RatingsComponent = ({ item }) => (
       <Icon as={StarIcon} color={item.ratings >= 4 ? "gold" : "gray.400"} />
       <Icon as={StarIcon} color={item.ratings >= 5 ? "gold" : "gray.400"} />
     </Flex>
-    {item.numOfReviews < 1 && <Text>0 reviews</Text>}
+
+    {item.numOfReviews < 1 && <Text>0 reviews </Text>}
     {item.numOfReviews >= 1 && (
       <Text>
         {item.numOfReviews} {item.numOfReviews === 1 ? "review" : "reviews"}

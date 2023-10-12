@@ -2,6 +2,7 @@ import { asyncHandler, customError } from "../error/globalError.js";
 import User from "../models/userM.js";
 import { sendToken } from "../utils/SendToken.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import crypto from "crypto";
 
 // @ user
 const registerUser = asyncHandler(async (req, res, next) => {
@@ -62,23 +63,62 @@ const updatePassword = asyncHandler(async (req, res, next) => {
 });
 
 const forgotPassword = asyncHandler(async (req, res, next) => {
-  console.log(req.body.email);
   const user = await User.findOne({ email: req.body.email });
   if (!user) throw new customError("No account exists with that email", 404);
-  await sendEmail(user);
-  res.status(200).json({ msg: `email sent to ${user.name} successfully` });
+
+  const token = user.getResetPasswordToken();
+
+  const resetUrl = `http://localhost:3000/reset/${token}`;
+
+  await user.save({ validateBeforeSave: false, new: true });
+
+  const message = `<p>You Have Requested To Rest Your Password</p>
+  <p><a href="${resetUrl}">Click Here</a> To Reset Your Password</p>
+  <p>This Link Will Expire In 30 Min</p>
+  <p>Pls Ignore If You Haven't Requested</p>`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Password Recovery",
+      message,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    user.save({ validateBeforeSave: false });
+    throw error;
+  }
+  res
+    .status(200)
+    .json({ msg: `email sent to ${user.resetPasswordToken} successfully` });
 });
 
 const resetPassword = asyncHandler(async (req, res, next) => {
-  const user = req.user;
-  const { password, confirmPassword } = req.body;
-  if (password.length < 8)
-    throw new customError("Password must contain 8 characters", 400);
-  if (password !== confirmPassword)
+  // converting normal token to hashed token and then we compare
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
+  const user = await User.findOne({
+    resetPasswordToken: hashedToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) throw new customError("User Not found", 404);
+
+  const { newPassword, confirmPassword } = req.body;
+  if (newPassword.length < 8)
+    throw new customError("password should contain atleast 8 characters", 400);
+  if (newPassword !== confirmPassword)
     throw new customError("password doesn't match", 400);
-  user.password = password;
-  await user.save({ validateBeforeSave: false, new: true });
-  res.status(200).json({ msg: "password updated successfully" });
+
+  user.password = newPassword;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  await user.save();
+  sendToken(user, 200, res);
 });
 
 export {

@@ -93,11 +93,16 @@ export default function NewProduct() {
     <>
       {loading && <Progress size="xs" isIndeterminate />}
       <Flex
+        border={{ base: "1px", md: "none" }}
+        mx={{ base: 5, md: "none" }}
+        mt={{ base: 4, md: "none" }}
+        mb={{ base: 16 }}
         px={{ base: 5 }}
         pb={{ base: 8, md: 4 }}
+        borderColor={"gray.400"}
         justify={"center"}
         rounded={{ base: "lg", md: "none" }}
-        shadow={{ base: "md", md: "none" }}
+        shadow={{ base: "xl", md: "none" }}
       >
         <Stack
           spacing={{ base: 4, md: 3 }}

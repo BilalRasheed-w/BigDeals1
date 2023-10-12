@@ -68,17 +68,23 @@ const AllUsers = () => {
     }
   };
   return (
-    <Flex p={4} gap={2}>
+    <Flex
+      p={4}
+      gap={2}
+      flexDir={{ base: "column", md: "row" }}
+      px={{ base: 5, md: 0 }}
+    >
       <SideBar />
       <VStack
         spacing={"5"}
         alignItems={"start"}
-        px={10}
+        px={{ base: 4, md: 10 }}
         rounded={"md"}
-        border={"1px"}
-        w={"77%"}
+        border={{ base: "none", md: "1px" }}
+        w={{ base: "full", md: "77%" }}
         py={2}
-        bg={"gray.100"}
+        bg={{ base: "white", md: "gray.100" }}
+        pb={{base:16}}
       >
         <Heading fontWeight={"medium"} textDecor={"underline"}>
           All Users

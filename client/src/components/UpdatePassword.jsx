@@ -33,7 +33,7 @@ const Schema = {
 export default function UpdatePassword() {
   const toast = useToast({ position: "top", duration: 2000, isClosable: true });
   const [loading, setLoading] = useState(false);
-  const [incorrect, setIncorrect] = useState(false);
+
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: { oldPassword: "", newPassword: "", confirmPassword: "" },
@@ -56,15 +56,14 @@ export default function UpdatePassword() {
               status: "success",
               title: "password updated successfully",
             });
+            action.resetForm();
           }
           i;
         } catch (error) {
           setLoading(false);
-          if (error.response.status) {
-            setIncorrect(true);
+          if (error.response.status === 400) {
+            toast({ status: "error", title: "Incorrect old Password" });
           }
-          console.log(error.message);
-          console.log(error);
         }
       },
     });
@@ -104,11 +103,7 @@ export default function UpdatePassword() {
               {errors.oldPassword}
             </Text>
           ) : null}
-          {incorrect ? (
-            <Text fontSize={"xs"} color={"red.500"}>
-              Incorrect oldPassword
-            </Text>
-          ) : null}
+          
         </FormControl>
         <FormControl isRequired>
           <FormLabel>New Password</FormLabel>

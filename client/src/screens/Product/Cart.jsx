@@ -1,6 +1,6 @@
-import React from "react";
 import {
   Button,
+  Stack,
   Divider,
   Flex,
   HStack,
@@ -13,66 +13,153 @@ import {
   Alert,
   AlertIcon,
   Switch,
+  Icon,
 } from "@chakra-ui/react";
 import some from "../../assets/log.jpg";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { DeleteIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import {
+  DeleteIcon,
+  ArrowForwardIcon,
+  CloseIcon,
+  AddIcon,
+  MinusIcon,
+} from "@chakra-ui/icons";
 import { FaArrowRight } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as ReactLink } from "react-router-dom";
+import { Link as ReactLink, useNavigate } from "react-router-dom";
 import {
   SubOneQty,
   addOneQty,
   deleteFromCart,
+  addShippingTotal,
 } from "../../store/slices/cartSlice";
 
 const Cart = () => {
+  const navigate = useNavigate();
   const { cart, subTotal } = useSelector((state) => state.cart);
   const [express, setExpress] = useState(false);
   const dispatch = useDispatch();
-  let shipping = 0;
-  if (subTotal <= 30000) {
-    shipping = shipping + 100;
-  }
-  let fastShipping = 0;
-  if (express) {
-    fastShipping = fastShipping + 350;
-    shipping = 0;
-  }
+
+  let ship = express ? 350 : subTotal <= 30000 ? 100 : 0;
+  let total = ship + subTotal;
+
+  const onCheckOut = () => {
+    dispatch(addShippingTotal({ shipping: ship, total }));
+    navigate("/shipping");
+  };
+
   return (
-    <div>
-      {cart && cart.length > 0 ? (
+    <>
+      {cart && cart.length >= 1 ? (
         <Flex
           py={5}
           bg={"gray.100"}
-          pl={10}
-          h={"100vh"}
+          h={{ base: "fit-content", md: "fit-content" }}
           justifyContent={"space-between"}
-          px={10}
+          px={{ base: 2, md: 10 }}
+          flexDir={{ base: "column", md: "column", lg: "row" }}
         >
-          <VStack w={"70%"}>
+          <VStack
+            w={{ base: "full", md: "full", lg: "70%" }}
+            pb={{ base: "10rem", md: "none" }}
+            pos={{ base: "relative", md: "unset" }}
+            spacing={{ base: 4, md: "none" }}
+          >
             {cart.map((item, i) => (
               <HStack
-                h={"7rem"}
+                key={i}
+                h={{ base: "12rem", md: "7rem" }}
                 justifyContent={"space-between"}
-                px={8}
+                px={{ base: 1, md: 8 }}
                 bg={"white"}
-                rounded={"2xl"}
+                rounded={{ base: "md", md: "2xl" }}
                 shadow={"xl"}
                 w={"full"}
               >
-                <HStack spacing={2} alignItems={"normal"} w={"18rem"} my={3}>
+                <HStack
+                  spacing={{ base: 2, md: 2 }}
+                  alignItems={"normal"}
+                  w={{ md: "18rem" }}
+                  my={3}
+                >
                   <Img
-                    src={item.images[0].imageUrl}
-                    h={"6rem"}
+                    mt={{ base: 3 }}
+                    src={item.image}
+                    h={{ base: "7rem", md: "6rem" }}
+                    w={{ base: "12rem" }}
                     rounded={"md"}
                   />
-                  <Text mt={5} fontWeight={"bold"}>
-                    {item.name}
-                  </Text>
+
+                  <VStack alignItems={{ base: "start" }} spacing={3}>
+                    <Text
+                      fontSize={{ base: "lg", md: "md" }}
+                      noOfLines={2}
+                      w={"full"}
+                      mt={5}
+                      fontWeight={"bold"}
+                    >
+                      {item.name}
+                    </Text>
+                    <Text
+                      display={{ base: "block", md: "none" }}
+                      fontWeight={"bold"}
+                      fontSize={"xl"}
+                    >
+                      <Text display={"inline-block"} mr={2}>
+                        ₹
+                      </Text>
+                      {item.price.toLocaleString("en-IN")}
+                    </Text>
+                    <HStack
+                      w={"full"}
+                      display={{ base: "flex", md: "none" }}
+                      justifyContent={"space-between"}
+                    >
+                      <HStack>
+                        <Text fontSize={"xl"} fontWeight={"bold"}>
+                          Qty:
+                        </Text>
+                        <Button
+                          bg={"gray.200"}
+                          size={"sm"}
+                          fontSize={"xs"}
+                          onClick={() => {
+                            if (item.qty <= 1) return;
+                            dispatch(SubOneQty(item));
+                          }}
+                        >
+                          <Icon as={MinusIcon} />
+                        </Button>
+                        <Text>{item.quantity}</Text>
+                        <Button
+                          bg={"gray.200"}
+                          size={"sm"}
+                          fontSize={"xs"}
+                          onClick={() => {
+                            dispatch(addOneQty(item));
+                          }}
+                        >
+                          <Icon as={AddIcon} />
+                        </Button>
+                      </HStack>
+                      <Icon
+                        me={4}
+                        fontSize={"xl"}
+                        color={"red"}
+                        as={DeleteIcon}
+                        onClick={() => {
+                          dispatch(deleteFromCart(item));
+                        }}
+                      />
+                    </HStack>
+                  </VStack>
                 </HStack>
-                <Text fontSize={"lg"} fontWeight={"bold"}>
+                <Text
+                  display={{ base: "none", md: "flex" }}
+                  fontSize={{ base: "md", md: "lg" }}
+                  fontWeight={"bold"}
+                >
                   <Text
                     fontWeight={"medium"}
                     me={1}
@@ -83,10 +170,9 @@ const Cart = () => {
                   </Text>
                   {item.price.toLocaleString("en-IN")}
                 </Text>
-
-                <HStack>
+                <HStack display={{ base: "none", md: "flex" }}>
                   <Button
-                    size={"sm"}
+                    size={{ base: "xs", md: "sm" }}
                     as={motion.button}
                     bg={"#4d5499"}
                     variant={"unstyled"}
@@ -101,9 +187,11 @@ const Cart = () => {
                   >
                     -
                   </Button>
-                  <Text>{item.qty}</Text>
+                  <Text fontSize={{ base: "xs", md: "md" }}>
+                    {item.quantity}
+                  </Text>
                   <Button
-                    size={"sm"}
+                    size={{ base: "xs", md: "sm" }}
                     as={motion.button}
                     variant={"unstyled"}
                     bg={"#4d5499"}
@@ -119,6 +207,7 @@ const Cart = () => {
                   </Button>
                 </HStack>
                 <IconButton
+                  display={{ base: "none", md: "flex" }}
                   variant={"unstyled"}
                   bg={"tomato"}
                   color={"white"}
@@ -131,88 +220,113 @@ const Cart = () => {
               </HStack>
             ))}
           </VStack>
-
-          <VStack
-            w={"27%"}
-            h={"30rem"}
-            shadow={"2xl"}
-            bg={"white"}
-            py={4}
-            spacing={"5"}
-            rounded={"2xl"}
-            px={10}
-          >
-            <Heading fontSize={"3xl"}>Cart items</Heading>
-            <HStack w={"full"} fontSize={"xl"} justifyContent={"space-between"}>
-              <Text>subtotal</Text>
-              <Text>{subTotal.toLocaleString("en-IN")}</Text>
-            </HStack>
-            <HStack w={"full"} fontSize={"xl"} justifyContent={"space-between"}>
-              <Text>shipping</Text>
-              <Text>{shipping}</Text>
-            </HStack>
-            <HStack w={"full"} fontSize={"xl"} justifyContent={"space-between"}>
-              <HStack>
-                <Text fontSize={"md"}>express shipping</Text>
-                <Switch
-                  isChecked={express}
-                  onChange={() => {
-                    setExpress(!express);
-                  }}
-                />
-              </HStack>
-              <Text>{express ? 350 : 0}</Text>
-            </HStack>
-            {express ? (
-              <Text color={"tomato"} fontSize={"xs"} fontWeight={"bold"}>
-                ( delivered in 24 hours )
-              </Text>
-            ) : (
-              <Text color={"tomato"} fontSize={"xs"} fontWeight={"bold"}>
-                ( shipping is free for orders above 30,000 )
-              </Text>
-            )}
-
-            <Divider />
-            <HStack w={"full"} fontSize={"xl"} justifyContent={"space-between"}>
-              <Text fontSize={"2xl"} fontWeight={"bold"}>
-                Total
-              </Text>
-              <Text fontSize={"2xl"} fontWeight={"bold"}>
-                {subTotal + shipping + fastShipping}
-              </Text>
-            </HStack>
-            <Button
-              as={motion.button}
-              w={"full"}
-              bg={"green.500"}
-              color={"white"}
-              rightIcon={<FaArrowRight />}
-              _hover={{ bg: "green.600" }}
-              whileTap={{ scale: 0.9 }}
-            >
-              CheckOut
-            </Button>
-            <Text fontSize={"lg"}>
-              or Continue{" "}
-              <Link as={ReactLink} to={"/"} color={"blue.500"}>
-                {" "}
-                Shopping
-              </Link>{" "}
-            </Text>
-          </VStack>
+          <Right
+            subTotal={subTotal}
+            express={express}
+            setExpress={setExpress}
+            onCheckOut={onCheckOut}
+            total={total}
+          />
         </Flex>
       ) : (
-        <Alert status="warning">
-          <AlertIcon />
-          No Products yet,{" "}
-          <Link ms={1} as={ReactLink} fontSize={"sm"} to={"/"}>
-            click here to add products
-          </Link>
-        </Alert>
+        <Stack h={{ base: "80vh" }}>
+          <Alert status="warning">
+            <AlertIcon />
+            No Products yet,
+            <Link ms={1} as={ReactLink} fontSize={"sm"} to={"/"}>
+              click here to add products
+            </Link>
+          </Alert>
+        </Stack>
       )}
-    </div>
+    </>
   );
 };
 
 export default Cart;
+
+const Right = ({ subTotal, express, setExpress, onCheckOut, total }) => (
+  <VStack
+    w={{ md: "full", lg: "27%" }}
+    m={{ base: 1, md: "none" }}
+    mx={{ base: 3, md: 0 }}
+    h={"fit-content"}
+    shadow={"2xl"}
+    bg={"white"}
+    py={{ base: 4, md: 10, lg: 4 }}
+    spacing={{ base: "3", lg: "5", md: "3" }}
+    rounded={"2xl"}
+    px={{ base: 3, md: 5, lg: 8 }}
+    mb={{ base: 20, md: 16, lg: 20 }}
+  >
+    <Heading fontSize={{ base: "2xl", md: "3xl" }}>Cart items</Heading>
+    <HStack w={"full"} fontSize={"xl"} justifyContent={"space-between"}>
+      <Text fontSize={{ base: "xl", md: "2xl", lg: "xl" }}>subtotal</Text>
+      <Text>{subTotal.toLocaleString("en-IN")}</Text>
+    </HStack>
+    <HStack w={"full"} fontSize={"xl"} justifyContent={"space-between"}>
+      <Text fontSize={{ base: "xl", md: "2xl", lg: "xl" }}>shipping</Text>
+      <Text>{express ? 0 : subTotal <= 30000 ? 100 : 0}</Text>
+    </HStack>
+    <HStack w={"full"} fontSize={"xl"} justifyContent={"space-between"}>
+      <HStack>
+        <Text fontSize={{ base: "xl", md: "2xl", lg: "xl" }}>
+          express shipping
+        </Text>
+        <Switch
+          isChecked={express}
+          onChange={() => {
+            setExpress(!express);
+          }}
+        />
+      </HStack>
+      <Text>{express ? 350 : 0}</Text>
+    </HStack>
+    {express ? (
+      <Text
+        color={"tomato"}
+        fontSize={{ base: "sm", md: "md", lg: "sm" }}
+        fontWeight={"bold"}
+      >
+        ( delivered in 24 hours )
+      </Text>
+    ) : (
+      <Text
+        color={"tomato"}
+        fontSize={{ base: "sm", md: "md", lg: "sm" }}
+        fontWeight={"bold"}
+      >
+        ( shipping is free for orders above 30,000 )
+      </Text>
+    )}
+
+    <Divider />
+    <HStack w={"full"} fontSize={"xl"} justifyContent={"space-between"}>
+      <Text fontSize={"2xl"} fontWeight={"bold"}>
+        Total
+      </Text>
+      <Text fontSize={"2xl"} fontWeight={"bold"}>
+        {total}
+      </Text>
+    </HStack>
+    <Button
+      as={motion.button}
+      w={"full"}
+      bg={"green.500"}
+      color={"white"}
+      rightIcon={<FaArrowRight />}
+      _hover={{ bg: "green.600" }}
+      whileTap={{ scale: 0.9 }}
+      onClick={onCheckOut}
+    >
+      CheckOut
+    </Button>
+    <Text fontSize={"lg"}>
+      or Continue{" "}
+      <Link as={ReactLink} to={"/"} color={"blue.500"}>
+        {" "}
+        Shopping
+      </Link>{" "}
+    </Text>
+  </VStack>
+);

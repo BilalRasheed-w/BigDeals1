@@ -12,8 +12,8 @@ export default function ProtectedRoutes({ Component }) {
   }, []);
 
   return (
-    <div>
+    <>
       <Component />
-    </div>
+    </>
   );
 }

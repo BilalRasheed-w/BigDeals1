@@ -12,17 +12,21 @@ import {
   Heading,
   Text,
   Link,
+  useToast,
+  Spinner,
+  useEditable,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { Link as ReactLink } from "react-router-dom";
+import { Link as ReactLink, useNavigate } from "react-router-dom";
 import "../../index.css";
 import axios from "axios";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
-import { SignedUp, loginUser } from "../../store/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { SignedUp } from "../../store/slices/userSlice";
+import { useEffect } from "react";
 
 const SignUpSchema = {
   name: Yup.string()
@@ -49,6 +53,9 @@ export default function Signup() {
   const [imageError, setImageError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setshowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
+  const navigate = useNavigate();
 
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
@@ -59,6 +66,8 @@ export default function Signup() {
           return setImageError(true);
         if (image && allowedTypes.includes(image.type)) setImageError(false);
 
+        setLoading(true);
+
         const formData = new FormData();
         if (image) {
           formData.append("image", image);
@@ -68,10 +77,16 @@ export default function Signup() {
         formData.append("password", values.password);
         try {
           const response = await axios.post(url, formData);
-          console.log(response.data.userData);
-          dispatch(SignedUp(response.data.userData));
+          setLoading(false);
+          if ((response.status = 200)) {
+            dispatch(SignedUp(response.data.userData));
+            navigate("/");
+          }
         } catch (error) {
-          console.log(error);
+          setLoading(false);
+          if (error) {
+            return toast({ status: "error", message: error.response.message });
+          }
         }
 
         action.resetForm();
@@ -84,42 +99,63 @@ export default function Signup() {
 
   return (
     <Flex
-      px={{ base: 5 }}
-      pb={{ base: 8, md: 4 }}
+      px={{ base: 4, md: 5 }}
+      pb={{ base: 20, md: 4 }}
       justify={"center"}
       rounded={{ base: "lg", md: "none" }}
       shadow={{ base: "md", md: "none" }}
+      bg={{ base: "gray.50", md: "none" }}
+      py={{ base: 4 }}
     >
       <Stack
         spacing={{ base: 4, md: 3 }}
-        shadow={{ lg: "2xl" }}
+        shadow={{ base: "2xl", lg: "2xl" }}
         h={{ lg: "fit-content" }}
-        rounded={{ lg: "2xl" }}
-        px={{ lg: 10 }}
+        rounded={{ base: "xl", lg: "2xl" }}
+        px={{ base: 4, lg: 10 }}
         w={{ base: "full", md: "80%", lg: "full" }}
         maxW={"md"}
         mt={{ lg: 2 }}
-        pt={{ base: 2, md: 4 }}
-        pb={{ base: 2, md: 0 }}
+        pt={{ base: 4, md: 4 }}
+        pb={{ base: 8, md: 0 }}
+        // bg={"yellow"}
+        mb={{ base: 20, md: "none" }}
+        border={{ base: "1px", md: "none" }}
+        borderColor={{ base: "gray.400", md: "none" }}
+        bg={{ base: "white", md: "none" }}
+        pos={"relative"}
       >
+        {loading && (
+          <Spinner
+            size={{ base: "xs", md: "sm" }}
+            pos={"absolute"}
+            right={{ base: 2, md: 3 }}
+            top={{ base: 2, md: 3 }}
+            speed="0.36s"
+          />
+        )}
         <Heading
           mb={{ base: 2, md: 0 }}
           alignSelf={{ base: "center" }}
-          fontSize={"2xl"}
+          fontSize={{ base: "3xl", md: "2xl" }}
           fontWeight={"medium"}
         >
           Sign up
         </Heading>
         <FormControl id="name">
-          <FormLabel>Name</FormLabel>
+          <FormLabel fontSize={{ base: "xl", md: "md" }}>Name</FormLabel>
           <Input
-            rounded={"sm"}
-            size={{ md: "xs", lg: "sm" }}
+            // rounded={"sm"}
+            // size={{ md: "xs", lg: "sm" }}
             type="text"
             name="name"
             value={values.name}
             onChange={handleChange}
             onBlur={handleBlur}
+            border={{ base: "1px", md: "none" }}
+            borderColor={"gray.500"}
+            size={{ base: "sm", md: "xs", lg: "sm" }}
+            rounded={{ base: "md", md: "sm" }}
           />
           {touched.name && errors.name ? (
             <Text fontSize={"xs"} color={"red.500"}>
@@ -128,15 +164,21 @@ export default function Signup() {
           ) : null}
         </FormControl>
         <FormControl id="email">
-          <FormLabel>Email address</FormLabel>
+          <FormLabel fontSize={{ base: "xl", md: "md" }}>
+            Email address
+          </FormLabel>
           <Input
-            rounded={"sm"}
-            size={{ md: "xs", lg: "sm" }}
+            // rounded={"sm"}
+            // size={{ md: "xs", lg: "sm" }}
             type="email"
             name="email"
             value={values.email}
             onChange={handleChange}
             onBlur={handleBlur}
+            border={{ base: "1px", md: "none" }}
+            borderColor={"gray.500"}
+            size={{ base: "sm", md: "xs", lg: "sm" }}
+            rounded={{ base: "md", md: "sm" }}
           />
           {touched.email && errors.email ? (
             <Text fontSize={"xs"} color={"red.500"}>
@@ -145,16 +187,20 @@ export default function Signup() {
           ) : null}
         </FormControl>
         <FormControl id="password">
-          <FormLabel>Password</FormLabel>
+          <FormLabel fontSize={{ base: "xl", md: "md" }}>Password</FormLabel>
           <InputGroup>
             <Input
-              rounded={"sm"}
-              size={{ md: "xs", lg: "sm" }}
+              // rounded={"sm"}
+              // size={{ md: "xs", lg: "sm" }}
               type={showPassword ? "text" : "password"}
               name="password"
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
+              border={{ base: "1px", md: "none" }}
+              borderColor={"gray.500"}
+              size={{ base: "sm", md: "xs", lg: "sm" }}
+              rounded={{ base: "md", md: "sm" }}
             />
             <InputRightElement h={"full"}>
               <Button
@@ -172,16 +218,22 @@ export default function Signup() {
           ) : null}
         </FormControl>
         <FormControl id="ConfirmPassword">
-          <FormLabel>Confirm Password</FormLabel>
+          <FormLabel fontSize={{ base: "xl", md: "md" }}>
+            Confirm Password
+          </FormLabel>
           <InputGroup>
             <Input
-              rounded={"sm"}
-              size={{ md: "xs", lg: "sm" }}
+              // rounded={"sm"}
+              // size={{ md: "xs", lg: "sm" }}
               type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
               value={values.confirmPassword}
               onChange={handleChange}
               onBlur={handleBlur}
+              border={{ base: "1px", md: "none" }}
+              borderColor={"gray.500"}
+              size={{ base: "sm", md: "xs", lg: "sm" }}
+              rounded={{ base: "md", md: "sm" }}
             />
             <InputRightElement h={"full"}>
               <Button
@@ -203,13 +255,19 @@ export default function Signup() {
           ) : null}
         </FormControl>
         <FormControl>
-          <FormLabel>Upload image</FormLabel>
+          <FormLabel fontSize={{ base: "xl", md: "md" }}>
+            Upload image
+          </FormLabel>
           <Input
             id="upload"
+            border={{ base: "1px", md: "none" }}
+            borderColor={"gray.500"}
+            size={{ base: "sm", md: "xs", lg: "sm" }}
+            rounded={{ base: "md", md: "sm" }}
             p={0}
             bg={"gray.100"}
             borderRadius={"10px"}
-            size={{ md: "xs", lg: "sm" }}
+            // size={{ md: "xs", lg: "sm" }}
             type="file"
             fontSize={"xs"}
             name="image"
@@ -228,7 +286,7 @@ export default function Signup() {
             alignSelf={"end"}
             justify={"space-between"}
           >
-            <Text align={"center"}>
+            <Text align={"center"} fontSize={{ base: "xl", md: "md" }}>
               Already a user?{" "}
               <Link as={ReactLink} to={"/login"} color={"blue.400"}>
                 Login
@@ -239,7 +297,7 @@ export default function Signup() {
             mt={{ base: 1, md: 0 }}
             mb={{ lg: 4 }}
             py={{ base: 2, md: 0 }}
-            size={{ md: "sm", lg: "md" }}
+            size={{ base: "lg", md: "sm", lg: "md" }}
             colorScheme={"blue"}
             variant={"solid"}
             onClick={handleSubmit}

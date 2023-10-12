@@ -1,0 +1,5 @@
+@media (min-width: 100px) and (max-width: 280px) {
+  #heroSubHeading {
+    display: none;
+  }
+}

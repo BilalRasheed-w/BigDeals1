@@ -12,9 +12,10 @@ export const loginUser = createAsyncThunk(
         { email, password },
         { withCredentials: true }
       );
-      console.log(response.data.userData);
+
       return response.data.userData;
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }
@@ -41,6 +42,7 @@ const userSlice = createSlice({
     SignedUp: (state, action) => {
       state.user = action.payload;
       localStorage.setItem("user", JSON.stringify(action.payload));
+      state.isAuth = true;
     },
     updateProfile: (state, action) => {
       const { _id, name, email } = action.payload;
@@ -71,6 +73,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { SignOut, SignedUp,updateProfile } = userSlice.actions;
+export const { SignOut, SignedUp, updateProfile } = userSlice.actions;
 
 export default userSlice.reducer;

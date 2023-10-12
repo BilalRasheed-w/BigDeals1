@@ -13,6 +13,7 @@ import {
   Thead,
   Tr,
   VStack,
+  Link,
 } from "@chakra-ui/react";
 import React from "react";
 import SideBar from "./SideBar";
@@ -22,9 +23,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
+import { fetchAllProducts } from "../../store/slices/adminSlice";
+import { Link as ReactLink } from "react-router-dom";
 
 const AdminProducts = () => {
-  const [products, setProducts] = useState([]);
+  const { loading, error, products } = useSelector((state) => state.admin);
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
 
   const EditProduct = (product) => {
@@ -45,31 +50,28 @@ const AdminProducts = () => {
     }
   };
 
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/products");
-      setProducts(response.data.products);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    fetchProducts();
+    dispatch(fetchAllProducts());
   }, []);
 
   return (
-    <Flex p={4} gap={2}>
+    <Flex
+      p={4}
+      gap={2}
+      flexDir={{ base: "column", md: "row" }}
+      px={{ base: 5, md: 0 }}
+    >
       <SideBar />
       <VStack
         spacing={"5"}
         alignItems={"start"}
-        px={10}
+        px={{ base: 4, md: 10 }}
         rounded={"md"}
-        border={"1px"}
-        w={"77%"}
+        border={{ base: "none", md: "1px" }}
+        w={{ base: "full", md: "77%" }}
         py={2}
-        bg={"gray.100"}
+        bg={{ base: "white", md: "gray.100" }}
+        pb={{ base: 16 }}
       >
         <Heading fontWeight={"medium"} textDecor={"underline"}>
           All Products
@@ -79,6 +81,7 @@ const AdminProducts = () => {
           width={"container.lg"}
           rounded={"lg"}
           py={3}
+          overflow={"auto"}
         >
           <Table size="sm" variant={"striped"} colorScheme="teal">
             <Thead>
@@ -87,7 +90,7 @@ const AdminProducts = () => {
                 <Th>Name</Th>
                 <Th>Price</Th>
                 <Th>stock</Th>
-                <Th>Id</Th>
+                <Th>Category</Th>
                 <Th textAlign={"center"}>Update/Delete</Th>
               </Tr>
             </Thead>
@@ -96,7 +99,11 @@ const AdminProducts = () => {
                 ? products.map((prod, i) => (
                     <Tr key={i}>
                       <Td>{i + 1}</Td>
-                      <Td>{prod.name}</Td>
+                      <Td>
+                        <Link as={ReactLink} to={`/product/${prod._id}`}>
+                          {prod.name}
+                        </Link>
+                      </Td>
                       <Td>{prod.price}</Td>
                       <Td>{prod.stock}</Td>
                       <Td>{prod.category}</Td>

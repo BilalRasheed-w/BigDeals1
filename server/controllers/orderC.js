@@ -8,7 +8,6 @@ const newOrder = asyncHandler(async (req, res, next) => {
   const {
     orderItems,
     subTotal,
-    tax,
     shipping,
     total,
     shippingInfo,
@@ -19,7 +18,6 @@ const newOrder = asyncHandler(async (req, res, next) => {
     user: user._id,
     orderItems,
     subTotal,
-    tax,
     shipping,
     total,
     shippingInfo,

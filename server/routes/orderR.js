@@ -17,7 +17,7 @@ const router = express.Router();
 
 // @ user
 router.post("/order/new", isLoggedIn, newOrder);
-router.get("/myOrders", isLoggedIn, myOrders);
+router.get("/orders/me", isLoggedIn, myOrders);
 router.get("/order/:id", isLoggedIn, getSingleOrder);
 
 // ! admin

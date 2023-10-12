@@ -9,6 +9,7 @@ const Loader = () => {
         m={"auto"}
         __css={{ transform: "scale(1.5)" }}
         mt={"20vh"}
+        h={"full"}
       >
         <Spinner size={"xl"} speed="0.3s" color="red.500" />
       </Flex>
