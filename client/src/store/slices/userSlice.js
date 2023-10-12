@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const url = "http://localhost:5000/api/user/login";
+const url = "https://big-deals1.vercel.app/api/user/login";
 
 export const loginUser = createAsyncThunk(
   "login",

@@ -42,7 +42,7 @@ export default function UpdatePassword() {
         setLoading(true);
         try {
           const response = await axios.put(
-            "http://localhost:5000/api/user/password",
+            "https://big-deals1.vercel.app/api/user/password",
             {
               oldPassword: values.oldPassword,
               newPassword: values.newPassword,

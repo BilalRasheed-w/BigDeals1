@@ -43,7 +43,7 @@ const SignUpSchema = {
     .required("pls enter confirm password"),
 };
 
-const url = "http://localhost:5000/api/user/new";
+const url = "https://big-deals1.vercel.app/api/user/new";
 
 const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 

@@ -35,7 +35,7 @@ export default function ForgotPassword() {
         setLoading(true);
         try {
           const response = await axios.post(
-            "http://localhost:5000/api/user/forgot",
+            "https://big-deals1.vercel.app/api/user/forgot",
             { email: values.email }
           );
        

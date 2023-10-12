@@ -41,7 +41,7 @@ export default function ResetPassword() {
         setLoading(true);
         try {
           const response = await await axios.put(
-            `http://localhost:5000/api/user/reset/${token}`,
+            `https://big-deals1.vercel.app/api/user/reset/${token}`,
             {
               newPassword: values.password,
               confirmPassword: values.confirmPassword,

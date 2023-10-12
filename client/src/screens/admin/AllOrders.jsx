@@ -35,7 +35,7 @@ const AllOrders = () => {
 
   useEffect(() => {
     const fetchProd = async () => {
-      const link = "http://localhost:5000/api/admin/products";
+      const link = "https://big-deals1.vercel.app/api/admin/products";
       const response = await axios.get(link, { withCredentials: true });
     };
     fetchProd();
@@ -46,7 +46,7 @@ const AllOrders = () => {
     const value = e.target.value;
     console.log(value);
     console.log(item);
-    let link = `http://localhost:5000/api/order/${item._id}`;
+    let link = `https://big-deals1.vercel.app/api/order/${item._id}`;
 
     alert("Do you want to update this order");
 

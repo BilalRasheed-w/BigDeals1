@@ -40,7 +40,7 @@ const AllUsers = () => {
     if (value === "admin")
       alert("Are you sure you want to make this user as admin.?");
 
-    const url = `http://localhost:5000/api/user/${user._id}`;
+    const url = `https://big-deals1.vercel.app/api/user/${user._id}`;
     try {
       const response = await axios.put(
         url,
@@ -56,7 +56,7 @@ const AllUsers = () => {
   };
 
   const deleteUser = async (user) => {
-    const url = `http://localhost:5000/api/user/${user._id}`;
+    const url = `https://big-deals1.vercel.app/api/user/${user._id}`;
     alert("Are you sure you want to delete this user.?");
     try {
       const response = await axios.delete(url, { withCredentials: true });

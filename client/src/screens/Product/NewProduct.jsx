@@ -26,7 +26,7 @@ import axios from "axios";
 import { useEffect } from "react";
 
 const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-const url = "http://localhost:5000/api/product/new";
+const url = "https://big-deals1.vercel.app/api/product/new";
 
 export default function NewProduct() {
   const toast = useToast();

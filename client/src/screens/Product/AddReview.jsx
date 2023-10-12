@@ -22,7 +22,7 @@ const AddReview = () => {
     duration: "3000",
     isClosable: true,
   });
-  const link = `http://localhost:5000/api/product/${id}`;
+  const link = `https://big-deals1.vercel.app/api/product/${id}`;
 
   useEffect(() => {
     const getProduct = async () => {
@@ -44,7 +44,7 @@ const AddReview = () => {
     };
     console.log(data);
 
-    const reviewLink = "http://localhost:5000/api/product/review";
+    const reviewLink = "https://big-deals1.vercel.app/api/product/review";
 
     try {
       const response = await axios.put(reviewLink, data, {
