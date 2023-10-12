@@ -13,6 +13,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
+import connectDB from "./config/db.js";
+
 import ProductRoutes from "./routes/productR.js";
 import UserRoutes from "./routes/userR.js";
 import OrderRoutes from "./routes/orderR.js";
@@ -23,5 +25,8 @@ app.use("/api", UserRoutes);
 app.use("/api", OrderRoutes);
 
 app.use(errMiddleware);
+connectDB();
+
+
 
 export default app;
