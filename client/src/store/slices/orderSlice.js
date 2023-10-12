@@ -1,10 +1,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// export const newOrder = createAsyncThunk("post/newOrder", async (data) => {
+//   let link = "http://localhost:5000/api/order/new";
+//   try {
+//     const response = await axios.post(link, data, { withCredentials: true });
+//     console.log(response);
+//   } catch (error) {
+//     throw error;
+//   }
+// });
+
 export const myOrders = createAsyncThunk("get/myOrders", async (data) => {
   let link = "http://localhost:5000/api/orders/me";
   try {
     const response = await axios.get(link, { withCredentials: true });
+
     return response.data.orders;
   } catch (error) {
     throw error;
@@ -37,10 +48,6 @@ const orderSlice = createSlice({
       state.loading = false;
       state.orders = null;
       state.error = action.error.message;
-      console.log(
-        "🚀 ~ file: orderSlice.js:40 ~ builder.addCase ~ action.error.message:",
-        action.error.message
-      );
     });
   },
 });

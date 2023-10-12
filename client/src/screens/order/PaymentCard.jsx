@@ -63,7 +63,6 @@ const PaymentCard = () => {
     try {
       const response = await axios.post(link, data, { withCredentials: true });
       if (response.status === 200) {
-        
         navigate("/order/success");
       }
       console.log(response);
@@ -73,14 +72,13 @@ const PaymentCard = () => {
 
   return (
     <>
-     
       <Flex justifyContent={"center"} pb={"32"} bg={"gray.50"}>
         <VStack
           w={{ base: "80%", md: "70%", lg: "33%" }}
           p={3}
-          px={{base:2,md:8}}
+          px={{ base: 2, md: 8 }}
           borderRadius={"xl"}
-          mt={{lg:10}}
+          mt={{ lg: 10 }}
           pb={10}
           spacing={{ base: 3, md: 5, lg: 5 }}
           m={5}
@@ -95,7 +93,7 @@ const PaymentCard = () => {
           >
             Payment Info
           </Heading>
-          <Divider  border={"1px"} borderColor={"red.500"} w={"55%"} mb={3} />
+          <Divider border={"1px"} borderColor={"red.500"} w={"55%"} mb={3} />
           <VStack w={"full"} alignItems={"start"} spacing={0}>
             <Flex
               alignItems={"center"}
@@ -121,14 +119,14 @@ const PaymentCard = () => {
               w={"full"}
               borderRadius={"md"}
             >
-               <Icon as={FaCalendarDays} p={0} fontSize={"xl"} />
-               <Input
-              size={"sm"}
-              type="number"
-              placeholder="Expiry"
-              onChange={(e) => {
-                setExpiry(e.target.value);
-              }}
+              <Icon as={FaCalendarDays} p={0} fontSize={"xl"} />
+              <Input
+                size={"sm"}
+                type="number"
+                placeholder="Expiry"
+                onChange={(e) => {
+                  setExpiry(e.target.value);
+                }}
               />
             </Flex>
             <Flex
@@ -138,51 +136,48 @@ const PaymentCard = () => {
               w={"full"}
               borderRadius={"md"}
             >
-               <Icon as={BsKeyFill} p={0} fontSize={"xl"} />
-               <Input
-              size={"sm"}
-              type="number"
-              placeholder="CVV"
-              onChange={(e) => {
-                setCvv(e.target.value);
-              }}
-            />
+              <Icon as={BsKeyFill} p={0} fontSize={"xl"} />
+              <Input
+                size={"sm"}
+                type="number"
+                placeholder="CVV"
+                onChange={(e) => {
+                  setCvv(e.target.value);
+                }}
+              />
             </Flex>
-              <Divider my={{lg:4}} />
-              <Flex
+            <Divider my={{ lg: 4 }} />
+            <Flex
               alignItems={"center"}
               p={2}
               gap={3}
               w={"full"}
               borderRadius={"md"}
             >
-
-          <Checkbox
-            isChecked={POD}
-            onChange={() => {
-              setPOD(!POD);
-              console.log(POD);
-            }}
-            size={"lg"}
-            w={"full"}
-          >
-            Pay on delivery
-          </Checkbox>
+              <Checkbox
+                isChecked={POD}
+                onChange={() => {
+                  setPOD(!POD);
+                  console.log(POD);
+                }}
+                size={"lg"}
+                w={"full"}
+              >
+                Pay on delivery
+              </Checkbox>
             </Flex>
-            
-            
           </VStack>
-            <Flex w={"full"} >
+          <Flex w={"full"}>
             <Button
-            w={'full'}
+              w={"full"}
               bg={"red.400"}
               color={"white"}
               variant={"unstyled"}
               _hover={{ bg: "red.500", transform: "scale(1.05)" }}
               px={10}
-            onClick={submitHandler}
+              onClick={submitHandler}
             >
-             Pay- ₹ {Total.toLocaleString("en-IN")}{" "}
+              Pay- ₹ {Total.toLocaleString("en-IN")}{" "}
             </Button>
           </Flex>
         </VStack>

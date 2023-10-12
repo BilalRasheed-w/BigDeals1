@@ -19,11 +19,12 @@ import { useState, useEffect } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Link as ReactLink, useNavigate } from "react-router-dom";
 
+import axios from "axios";
+
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../store/slices/userSlice";
-import axios from "axios";
 
 const LoginSchema = {
   email: Yup.string()
@@ -37,6 +38,7 @@ const LoginSchema = {
 export default function Signup() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const { isAuth, error } = useSelector((state) => state.user);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -82,6 +84,7 @@ export default function Signup() {
       navigate("/");
     }
   }, [isAuth, error, dispatch]);
+
   return (
     <Flex
       px={{ base: 4, md: 5 }}
@@ -119,6 +122,7 @@ export default function Signup() {
             speed="0.36s"
           />
         )}
+
         <Heading
           mb={{ base: 2, md: 0 }}
           alignSelf={{ base: "center" }}
@@ -190,7 +194,8 @@ export default function Signup() {
             align={"start"}
             justify={"space-between"}
           >
-           
+            {/* <Checkbox>Remember me</Checkbox> */}
+
             <Link
               as={ReactLink}
               alignSelf={{ base: "end", lg: "start" }}
