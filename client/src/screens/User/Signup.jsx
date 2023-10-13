@@ -45,6 +45,8 @@ const SignUpSchema = {
 
 const url = "https://big-deals1.vercel.app/api/user/new";
 
+// const url = "http://localhost:5000/api/user/new";
+
 const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 
 export default function Signup() {
@@ -120,7 +122,7 @@ export default function Signup() {
         pb={{ base: 8, md: 0 }}
         // bg={"yellow"}
         mb={{ base: 20, md: "none" }}
-        border={{ base: "1px", md: "none" }}
+        // border={{ base: "1px", md: "1px" }}
         borderColor={{ base: "gray.400", md: "none" }}
         bg={{ base: "white", md: "none" }}
         pos={"relative"}
@@ -140,7 +142,7 @@ export default function Signup() {
           fontSize={{ base: "3xl", md: "2xl" }}
           fontWeight={"medium"}
         >
-          Sign up
+          Sign up 
         </Heading>
         <FormControl id="name">
           <FormLabel fontSize={{ base: "xl", md: "md" }}>Name</FormLabel>
@@ -152,10 +154,10 @@ export default function Signup() {
             value={values.name}
             onChange={handleChange}
             onBlur={handleBlur}
-            border={{ base: "1px", md: "none" }}
+            border={{ base: "1px", md: "1px" }}
             borderColor={"gray.500"}
             size={{ base: "sm", md: "xs", lg: "sm" }}
-            rounded={{ base: "md", md: "sm" }}
+            rounded={{ base: "md", md: "md" }}
           />
           {touched.name && errors.name ? (
             <Text fontSize={"xs"} color={"red.500"}>
@@ -175,10 +177,10 @@ export default function Signup() {
             value={values.email}
             onChange={handleChange}
             onBlur={handleBlur}
-            border={{ base: "1px", md: "none" }}
+            border={{ base: "1px", md: "1px" }}
             borderColor={"gray.500"}
             size={{ base: "sm", md: "xs", lg: "sm" }}
-            rounded={{ base: "md", md: "sm" }}
+            rounded={{ base: "md", md: "md" }}
           />
           {touched.email && errors.email ? (
             <Text fontSize={"xs"} color={"red.500"}>
@@ -197,10 +199,10 @@ export default function Signup() {
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
-              border={{ base: "1px", md: "none" }}
+              border={{ base: "1px", md: "1px" }}
               borderColor={"gray.500"}
               size={{ base: "sm", md: "xs", lg: "sm" }}
-              rounded={{ base: "md", md: "sm" }}
+              rounded={{ base: "md", md: "md" }}
             />
             <InputRightElement h={"full"}>
               <Button
@@ -230,10 +232,10 @@ export default function Signup() {
               value={values.confirmPassword}
               onChange={handleChange}
               onBlur={handleBlur}
-              border={{ base: "1px", md: "none" }}
+              border={{ base: "1px", md: "1px" }}
               borderColor={"gray.500"}
               size={{ base: "sm", md: "xs", lg: "sm" }}
-              rounded={{ base: "md", md: "sm" }}
+              rounded={{ base: "md", md: "md" }}
             />
             <InputRightElement h={"full"}>
               <Button
@@ -260,13 +262,13 @@ export default function Signup() {
           </FormLabel>
           <Input
             id="upload"
-            border={{ base: "1px", md: "none" }}
-            borderColor={"gray.500"}
+            // border={{ base: "1px", md: "1px" }}
+            // borderColor={"gray.500"}
             size={{ base: "sm", md: "xs", lg: "sm" }}
-            rounded={{ base: "md", md: "sm" }}
+            rounded={{ base: "md", md: "md" }}
             p={0}
             bg={"gray.100"}
-            borderRadius={"10px"}
+            borderRadius={"20px"}
             // size={{ md: "xs", lg: "sm" }}
             type="file"
             fontSize={"xs"}
