@@ -18,7 +18,7 @@ import {
   isAuthenticated as isLoggedIn,
   isAuthorized as isAdmin,
 } from "../middleware/isAuth.js";
-import upload from "../config/s3.js";
+import upload from "../config/s3.cjs";
 
 const router = express.Router();
 
