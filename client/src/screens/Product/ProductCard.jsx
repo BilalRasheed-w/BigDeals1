@@ -41,7 +41,7 @@ const ProductCard = () => {
   const [error, seterror] = useState();
 
   const { id } = useParams();
-  const url = `/api/product/${id}`;
+  const url = `https://big-deals1.vercel.app/api/product/${id}`;
   const dispatch = useDispatch();
   const toast = useToast({
     isClosable: true,

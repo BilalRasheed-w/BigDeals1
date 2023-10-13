@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "https://big-deals1-client.vercel.app",
   credentials: true,
 };
 
