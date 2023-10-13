@@ -20,6 +20,7 @@ import {
 } from "../middleware/isAuth.js";
 import upload from "../config/s3.cjs";
 
+
 const router = express.Router();
 
 router.post("/user/new", upload.single("image"), registerUser);

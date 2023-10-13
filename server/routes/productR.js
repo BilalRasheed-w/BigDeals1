@@ -16,6 +16,7 @@ import {
 } from "../middleware/isAuth.js";
 import upload from "../config/s3.cjs";
 
+
 const router = express.Router();
 
 router.get("/admin/products", isLoggedIn, isAdmin, AdminProducts);
