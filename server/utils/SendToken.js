@@ -4,7 +4,6 @@ const sendToken = (user, status, res) => {
     httpOnly: true,
     secure:true,
     domain:'big-deals1-server.vercel.app',
-    samesite:'lax',
     expires: new Date(
       Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
     ),
