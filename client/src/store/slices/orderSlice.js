@@ -12,7 +12,7 @@ import axios from "axios";
 // });
 
 export const myOrders = createAsyncThunk("get/myOrders", async (data) => {
-  let link = "https://big-deals1.vercel.app/api/orders/me";
+  let link = "https://big-deals1-server.vercel.app/api/orders/me";
   try {
     const response = await axios.get(link, { withCredentials: true });
 

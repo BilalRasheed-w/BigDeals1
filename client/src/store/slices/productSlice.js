@@ -4,7 +4,7 @@ import axios from "axios";
 export const fetchProducts = createAsyncThunk(
   "get/products",
   async ({ keyword = "", currentPage = 1 }) => {
-    let link = `https://big-deals1.vercel.app/api/products?keyword=${keyword}&page=${currentPage}`;
+    let link = `https://big-deals1-server.vercel.app/api/products?keyword=${keyword}&page=${currentPage}`;
     try {
       const response = await axios.get(link);
       return response.data;

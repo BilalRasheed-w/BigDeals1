@@ -53,7 +53,7 @@ export default function Profile() {
       console.log(values);
       try {
         const response = await axios.put(
-          "https://big-deals1.vercel.app/api/user/me",
+          "https://big-deals1-server.vercel.app/api/user/me",
           {
             email: values.email,
             name: values.name,

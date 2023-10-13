@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const prodUrl = "https://big-deals1.vercel.app/api/admin/products";
-const usersUrl = "https://big-deals1.vercel.app/api/users";
-const ordersUrl = "https://big-deals1.vercel.app/api/orders";
+const prodUrl = "https://big-deals1-server.vercel.app/api/admin/products";
+const usersUrl = "https://big-deals1-server.vercel.app/api/users";
+const ordersUrl = "https://big-deals1-server.vercel.app/api/orders";
 
 export const fetchAllProducts = createAsyncThunk("get/products", async () => {
   try {

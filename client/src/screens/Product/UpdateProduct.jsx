@@ -28,7 +28,7 @@ const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 
 export default function UpdateProduct() {
   const { id } = useParams();
-  const url = `https://big-deals1.vercel.app/api/product/${id}`;
+  const url = `https://big-deals1-server.vercel.app/api/product/${id}`;
   const toast = useToast({
     duration: "3000",
     position: "top",

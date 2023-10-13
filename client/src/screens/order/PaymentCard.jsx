@@ -22,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // let link = "http://localhost:5000/api/order/new";
-const link = "https://big-deals1.vercel.app/api/order/new";
+let link = "https://big-deals1-server.vercel.app/api/order/new";
 
 const PaymentCard = () => {
   const { loading, error, Total, cart, subTotal, shipping, shippingInfo } =

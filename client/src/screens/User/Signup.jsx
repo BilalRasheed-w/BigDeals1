@@ -43,7 +43,7 @@ const SignUpSchema = {
     .required("pls enter confirm password"),
 };
 
-const url = "https://big-deals1.vercel.app/api/user/new";
+const url = "https://big-deals1-server.vercel.app/api/user/new";
 
 // const url = "http://localhost:5000/api/user/new";
 
@@ -56,7 +56,11 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setshowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const toast = useToast();
+  const toast = useToast({
+    position: "top",
+    isClosable: true,
+    duration: "3000",
+  });
   const navigate = useNavigate();
 
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
@@ -89,12 +93,9 @@ export default function Signup() {
             return toast({
               status: "error",
               title: "Email already exists",
-              position: "top",
-              isClosable: true,
-              duration: "3000",
             });
           } else {
-            return toast({ status: "error", title: error.response.message });
+            return toast({ status: "error", title: 'Some error occurred pls try again later' });
           }
         }
 

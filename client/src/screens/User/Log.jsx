@@ -56,7 +56,8 @@ export default function Signup() {
         setLoading(true);
         try {
           const response = await axios.post(
-            "https://big-deals1.vercel.app/api/user/login",
+            "https://big-deals1-server.vercel.app/api/user/login",
+            // "http://localhost:5000/api/user/login",
             { email: values.email, password: values.password }
           );
           if (response.status === 200) {

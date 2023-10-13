@@ -37,7 +37,7 @@ const AdminProducts = () => {
   };
 
   const deleteProduct = async (product) => {
-    const url = `https://big-deals1.vercel.app/api/product/${product._id}`;
+    const url = `https://big-deals1-server.vercel.app//api/product/${product._id}`;
     alert("Are you sure you want to delete this product.?");
     try {
       const response = await axios.delete(url, { withCredentials: true });
