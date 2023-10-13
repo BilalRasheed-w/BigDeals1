@@ -21,7 +21,8 @@ import { useNavigate } from "react-router-dom";
 // import { newOrder } from "../../store/slices/orderSlice";
 import axios from "axios";
 
-let link = "https://big-deals1.vercel.app/api/order/new";
+// let link = "http://localhost:5000/api/order/new";
+const link = "https://big-deals1.vercel.app/api/order/new";
 
 const PaymentCard = () => {
   const { loading, error, Total, cart, subTotal, shipping, shippingInfo } =
@@ -66,8 +67,9 @@ const PaymentCard = () => {
         navigate("/order/success");
       }
       console.log(response);
-    } catch (error) {}
-    console.log(error);
+    } catch (error) {
+      return toast({ status: "error", title: error.response.message });
+    }
   };
 
   return (
@@ -158,7 +160,6 @@ const PaymentCard = () => {
                 isChecked={POD}
                 onChange={() => {
                   setPOD(!POD);
-                  console.log(POD);
                 }}
                 size={"lg"}
                 w={"full"}

@@ -54,7 +54,9 @@ const MyOrders = () => {
             <Loader />
           </Box>
         ) : error ? (
-          <AlertComponent status={"error"} message={error.message} />
+          <Box h={"70vh"} w={'full'}>
+          <AlertComponent  status={"error"} message={error.message || 'no orders yet'} />
+          </Box>
         ) : orders && orders.length >= 1 ? (
           <VStack
             w={{ base: "full", md: "60vw" }}

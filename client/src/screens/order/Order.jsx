@@ -31,38 +31,7 @@ const Order = () => {
 
   return (
     <>
-      {/* <Stack h={"80vh"} bg={"gray.50"} flexDir={"row"}>
-        <VStack w={"60vw"}>
-          {cart.map((item, i) => (
-            <HStack key={i} bg={'yellow'} >
-              <Img src={item.image} h={"5rem"} />
-              <Text>{item.name}</Text>
-              <Text>{item.price}</Text>
-              <Text>{item.qty}</Text>
-            </HStack>
-          ))}
-        </VStack>
-
-
-        <VStack border={"1px"} w={"30vw"}>
-          <VStack h={"30vh"}>
-            <Heading>shippingInfo</Heading>
-            <Text noOfLines={"2"}>address:{shippingInfo.address}</Text>
-
-            <Text>state:{shippingInfo.state}</Text>
-            <Text>pincode:{shippingInfo.pincode}</Text>
-          </VStack>
-          <VStack>
-            <Heading>Order Info</Heading>
-            <Text>subTotal:{subTotal}</Text>
-            <Text>shipping:{shipping}</Text>
-            <Text>Total:{Total}</Text>
-          </VStack>
-          <Button bg={"tomato"} onClick={proceed}>
-            Proceed to payment
-          </Button>
-        </VStack>
-      </Stack> */}
+     
       <Flex
         py={5}
         bg={"gray.100"}

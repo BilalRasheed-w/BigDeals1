@@ -67,7 +67,6 @@ export default function Signup() {
         if (image && !allowedTypes.includes(image.type))
           return setImageError(true);
         if (image && allowedTypes.includes(image.type)) setImageError(false);
-
         setLoading(true);
 
         const formData = new FormData();
@@ -86,8 +85,16 @@ export default function Signup() {
           }
         } catch (error) {
           setLoading(false);
-          if (error) {
-            return toast({ status: "error", message: error.response.message });
+          if (error.response.status === 409) {
+            return toast({
+              status: "error",
+              title: "Email already exists",
+              position: "top",
+              isClosable: true,
+              duration: "3000",
+            });
+          } else {
+            return toast({ status: "error", title: error.response.message });
           }
         }
 
@@ -142,7 +149,7 @@ export default function Signup() {
           fontSize={{ base: "3xl", md: "2xl" }}
           fontWeight={"medium"}
         >
-          Sign up 
+          Sign up
         </Heading>
         <FormControl id="name">
           <FormLabel fontSize={{ base: "xl", md: "md" }}>Name</FormLabel>

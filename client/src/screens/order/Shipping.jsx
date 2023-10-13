@@ -67,7 +67,6 @@ const Shipping = () => {
           country,
           pinCode: values.pincode,
         };
-        console.log(data);
         dispatch(addShippingInfo(data));
         navigate("/order/confirm");
       },
