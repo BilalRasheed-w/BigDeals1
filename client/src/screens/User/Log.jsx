@@ -60,6 +60,7 @@ export default function Signup() {
             // "http://localhost:5000/api/user/login",
             { email: values.email, password: values.password }
           );
+          console.log(response)
           if (response.status === 200) {
             setLoading(false);
             dispatch(
