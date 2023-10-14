@@ -7,7 +7,7 @@ const sendToken = (user, status, res) => {
       Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
     ),
   };
-  res.cookie("token", token, cookieOptions);
+  // res.cookie("token", token, cookieOptions);
   const userData = {
     name: user.name,
     email: user.email,
@@ -15,7 +15,7 @@ const sendToken = (user, status, res) => {
     image: user.image,
     role:user.role
   };
-  res.status(status).json({ userData, success: true,token });
+  res.status(status).cookie("token", token, cookieOptions).json({ userData, success: true,token });
 };
 
 export { sendToken };
