@@ -17,7 +17,7 @@ const sendToken = (user, status, res) => {
     image: user.image,
     role:user.role
   };
-  res.status(status).json({ userData, success: true });
+  res.status(status).json({ userData, success: true,token });
 };
 
 export { sendToken };
