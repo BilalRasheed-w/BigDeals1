@@ -3,9 +3,7 @@ const sendToken = (user, status, res) => {
   const cookieOptions = {
     httpOnly: true,
     secure:true,
-    domain:'big-deals1-client.vercel.app',
-    samesite:"lax",
-    expires: new Date(
+     expires: new Date(
       Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
     ),
   };
